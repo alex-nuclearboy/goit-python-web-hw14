@@ -130,7 +130,7 @@ class Auth:
 
         Args:
             refresh_token (str): The refresh token to decode.
-        
+
         Returns:
             str: The user's email extracted from the token if valid.
 
@@ -165,7 +165,7 @@ class Auth:
         Raises:
             HTTPException: If the token is invalid or the user does not exist.
 
-        
+
         """
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -215,7 +215,7 @@ class Auth:
         )
         return token
 
-    async def get_email_from_token(self, token: str):
+    async def get_email_from_token(self, token: str) -> str:
         """
         Extracts the user's email address from a verification token.
 
