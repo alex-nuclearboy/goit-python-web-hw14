@@ -123,7 +123,7 @@ cd docs
     ```
 - **View the documentation:**
 
-Open the generated HTML documentation by navigating to the `_build/html` directory and opening the index.html file in a web browser.
+Open the generated HTML documentation by navigating to the `_build/html` directory and opening the `index.html` file in a web browser.
 
 ### Starting the FastAPI Application
 
