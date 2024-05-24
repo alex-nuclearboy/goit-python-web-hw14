@@ -1,12 +1,16 @@
 """
-This module handles the email sending functionality for the application using
-FastAPI-Mail, which provides support for sending emails asynchronously.
+Email Handling Module
 
-It configures the email settings and defines a function to send verification
-emails to users during the registration process.
+This module is responsible for sending emails using FastAPI-Mail, supporting
+asynchronous operations. It configures email settings and defines functions
+to send verification emails to users during registration and password reset
+emails when requested.
+
+Uses the application configuration settings for SMTP server details and
+templates for constructing the emails.
 """
-
 from pathlib import Path
+import logging
 
 from fastapi import HTTPException
 
@@ -17,8 +21,12 @@ from pydantic import EmailStr
 from src.services.auth import auth_service
 from src.conf.config import settings
 
-# Configuration for FastAPI-Mail,
-# using settings from the application configuration.
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Email configuration using settings from the application configuration
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.mail_username,
     MAIL_PASSWORD=settings.mail_password,
@@ -36,7 +44,8 @@ conf = ConnectionConfig(
 
 async def send_email(email: EmailStr, username: str, host: str):
     """
-    Sends an email to a user with a link to verify their email address.
+    Asynchronously sends a verification email to a user with a link
+    to verify their email address.
 
     Args:
         email (EmailStr): The email address of the recipient.
@@ -68,13 +77,13 @@ async def send_email(email: EmailStr, username: str, host: str):
         fm = FastMail(conf)
         await fm.send_message(message, template_name="email_template.html")
     except ConnectionErrors as err:
-        print(f"Failed to send email: {err}")
+        logging.error(f"Failed to send email: {err}")
         raise HTTPException(status_code=500, detail="Email could not be sent.")
 
 
 async def send_reset_email(email: EmailStr, username: str, host: str):
     """
-    Sends a password reset email to a specified user.
+    Asynchronously sends a password reset email to a specified user.
 
     This function generates a token for password resetting and sends an email
     containing a token that the user can use to verify their identity and
@@ -108,5 +117,5 @@ async def send_reset_email(email: EmailStr, username: str, host: str):
         await fm.send_message(message,
                               template_name="reset_password_email.html")
     except ConnectionErrors as err:
-        print(f"Failed to send email: {err}")
+        logging.error(f"Failed to send email: {err}")
         raise HTTPException(status_code=500, detail="Email could not be sent.")
