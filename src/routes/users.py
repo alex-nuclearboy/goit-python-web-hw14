@@ -1,5 +1,6 @@
 """
 User Profile Management Module
+------------------------------
 
 This FastAPI module handles user profile operations, allowing users
 to retrieve their profile data and update their avatar images. It integrates
@@ -43,13 +44,12 @@ async def read_users_me(
     """
     Retrieves the authenticated user's profile data from the database.
 
-    Args:
-        current_user (User): The user instance obtained after successful
-                             authentication.
-
-    Returns:
-        UserDb: A Pydantic model containing the user's profile data such as
-        username, email, and avatar URL.
+    :param current_user: The user instance obtained after successful \
+                         authentication.
+    :type current_user: User
+    :return: A Pydantic model containing the user's profile data, such as \
+             username, email, creation and update times, and avatar URL.
+    :rtype: UserDb
     """
     return current_user
 
@@ -79,18 +79,18 @@ async def update_avatar_user(
     profile after uploading the file to Cloudinary. The new avatar URL is then
     saved in the database.
 
-    Args:
-        file (UploadFile): The new avatar image to be uploaded.
-        current_user (User): The user instance obtained after successful
-                             authentication.
-        db (Session): The SQLAlchemy session for database interaction.
+    :param file: The new avatar image to be uploaded.
+    :type file: UploadFile
+    :param current_user: The user instance obtained after successful \
+                         authentication.
+    :type current_user: User
+    :param db: The SQLAlchemy session for database interaction.
+    :type db: Session
+    :return: The updated user profile data including the new avatar URL.
+    :rtype: UserDb
+    :raises HTTPException: If there is an issue with the file upload \
+                           or database update.
 
-    Returns:
-        UserDb: The updated user profile data including the new avatar URL.
-
-    Raises:
-        HTTPException: If there is an issue with the file upload
-                       or database update.
     """
     cloudinary.config(
         cloud_name=settings.cloudinary_name,
