@@ -16,6 +16,7 @@ access to configuration throughout the application.
 
 Usage
 .....
+
 Access configuration settings via the `settings` instance:
 
 .. code-block:: python
