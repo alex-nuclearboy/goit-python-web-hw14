@@ -15,7 +15,7 @@ The settings instance is initialized at the module level, providing easy
 access to configuration throughout the application.
 
 Usage
------
+.....
 Access configuration settings via the `settings` instance:
 
 .. code-block:: python
