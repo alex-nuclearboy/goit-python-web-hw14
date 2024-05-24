@@ -2,6 +2,26 @@
 
 This repository extends a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task), enhancing a REST API for contact management with comprehensive documentation generated using Sphinx. Built with FastAPI and SQLAlchemy, it supports advanced features including user authentication, contact searches, rate limiting, and integration with Cloudinary for avatar updates. This extension focuses on improved documentation and usability.
 
+## Table of Contents
+
+1. [Key Features](#key-features)
+   - [Original](#original)
+   - [New in this extension](#new-in-this-extension)
+2. [Technologies Used](#technologies-used)
+3. [Getting Started](#getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+   - [Generating and Viewing Project Documentation](#generating-and-viewing-project-documentation)
+   - [Starting the FastAPI Application](#starting-the-fastapi-application)
+4. [Using the API](#using-the-api)
+   - [Using the API with Swagger UI](#using-the-api-with-swagger-ui)
+   - [Using the API with Postman](#using-the-api-with-postman)
+5. [Shutting Down and Exiting](#shutting-down-and-exiting)
+   - [Stopping the Application](#stopping-the-application)
+   - [Shutting down the PostgreSQL Server](#shutting-down-the-postgresql-server)
+   - [Exiting the Poetry Environment](#exiting-the-poetry-environment)
+
+
 ## Key Features
 
 #### Original:
@@ -105,7 +125,7 @@ cd docs
 
 Open the generated HTML documentation by navigating to the `_build/html` directory and opening the index.html file in a web browser.
 
-### Start the FastAPI Application
+### Starting the FastAPI Application
 
 - **To launch the FastAPI server** use the following commands depending on your operating system:
     - Unix/Linux/macOS:
@@ -119,11 +139,13 @@ Open the generated HTML documentation by navigating to the `_build/html` directo
 
 This command will start the API server accessible at [http://localhost:8000](http://localhost:8000).
 
-## Using the API with Swagger UI
+## Using the API
+
+### Using the API with Swagger UI
 
 Once the server is running, you can access the Swagger UI to test the API endpoints at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-## Using the API with Postman
+### Using the API with Postman
 
 - **Register a New User:**
 
@@ -166,9 +188,11 @@ docker compose down
 docker compose stop
 ```
 
-- **Exiting the Poetry Environment**
+### Exiting the Poetry Environment
 ```bash
 exit
 ```
 
 This command will deactivate the virtual environment and return you to your system's default environment.
+
+<a href="#contact-management-api" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; display: inline-block; border-radius: 8px; text-decoration: none;">Back to Top</a>
