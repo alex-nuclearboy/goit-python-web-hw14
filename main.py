@@ -8,14 +8,29 @@ requests from specified origins.
 
 The application includes the following functionalities:
 
-* User Authentication and Registration (details in the /auth documentation)
-* Contact Management with CRUD operations (Create, Read, Update, Delete):
-    * List all contacts: GET /api/contacts
-    * Create a new contact: POST /api/contacts
-    * Get details of a specific contact: GET /api/contacts/{id}
-    * Update a contact: PUT /api/contacts/{id}
-    * Delete a contact: DELETE /api/contacts/{id}
-* User Profile Management (details in the /users documentation)
+* User Authentication and Registration (CRUD operations):
+  * Register a new user: POST /api/auth/signup
+  * Authenticate and receive tokens: POST /api/auth/login
+  * Refresh authentication tokens: GET /api/auth/refresh_token
+  * Confirm user email via token: GET /api/auth/confirm_email/{token}
+  * Request new email verification token: POST /api/auth/request_email
+  * Initiate password reset process: POST /api/auth/password-reset/
+  * Complete password reset using token: POST /api/auth/password-reset/confirm/
+
+* Contact Management (CRUD operations):
+  * List all contacts with search capabilities: GET /api/contacts
+  * Create a new contact: POST /api/contacts
+  * Get details of a specific contact: GET /api/contacts/{contact_id}
+  * Update a specific contact: PATCH /api/contacts/{contact_id}
+  * Delete a specific contact: DELETE /api/contacts/{contact_id}
+  * List contacts with upcoming birthdays: GET /api/contacts/birthdays
+
+* User Profile Management (CRUD operations):
+  * Retrieve current user's profile: GET /api/users/me
+  * Update current user's avatar: PATCH /api/users/avatar
+
+* Additional Features:
+  * Basic greeting and API documentation direction: GET /
 
 Rate limiting is applied globally to ensure fair usage and prevent abuse.
 
