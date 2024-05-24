@@ -1,3 +1,24 @@
+"""
+Database Models Module
+
+This module defines the SQLAlchemy ORM models for a Contact Management App.
+The models include 'User' for storing user details and 'Contact' for storing
+contact information linked to a specific user. These models are used to
+interact with the PostgreSQL database, enabling CRUD operations on user and
+contact data.
+
+Each model includes fields that are mapped to the database columns, with
+appropriate data types and constraints. Relationships are also defined where
+necessary to maintain integrity and facilitate easier data retrieval and
+manipulation across related records.
+
+Models:
+- Contact: Represents a contact with personal and communication information.
+- User: Represents a user of the application, including authentication details.
+
+The classes use the declarative base class provided by SQLAlchemy to define
+database schema and ORM mappings directly in Python code.
+"""
 from sqlalchemy import Column, Integer, String, Boolean, Date, Text, func
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
