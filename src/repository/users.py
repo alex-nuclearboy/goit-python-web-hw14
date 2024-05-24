@@ -1,5 +1,6 @@
 """
 User Management Operations Module
+---------------------------------
 
 This module provides asynchronous operations for managing user data within
 a database environment. It handles operations such as creating new users,

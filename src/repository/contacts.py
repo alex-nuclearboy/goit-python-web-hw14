@@ -1,5 +1,6 @@
 """
 Contact Management Operations Module
+------------------------------------
 
 This module provides asynchronous functions to handle CRUD operations
 for contacts in a Contact Management App using FastAPI and SQLAlchemy.
