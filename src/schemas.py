@@ -1,3 +1,37 @@
+"""
+Pydantic Models Module
+
+This module contains Pydantic models for user and contact management within
+the application. These models enforce validation and typing, ensuring data
+integrity when interacting with the database or processing incoming requests.
+Each model encapsulates specific fields and validation rules necessary for
+various operations: creating, updating, and retrieving users and contacts.
+
+Models:
+- ContactBase: Base model for contact fields.
+- ContactModel: Inherits from ContactBase for creating new contacts
+                with required fields.
+- ContactUpdate: Allows for partial updates with optional fields.
+- ContactResponse: Extends ContactBase to include contact metadata such as
+                   creation and update timestamps.
+- UserModel: Defines user creation fields.
+- UserDb: Maps to the SQLAlchemy user database model, used for direct
+          interactions with the ORM.
+- UserResponse: Provides a structured response for operations involving
+                user data.
+- TokenModel: Represents authentication tokens returned to the user.
+- RequestEmail: Used for operations requiring a validated email input.
+
+These models simplify request validation, response serialisation, and
+interaction with the ORM, promoting a clean and maintainable codebase.
+
+Usage:
+Models from this module are typically used in route handlers to validate
+incoming data, serialize outgoing data, and interact with the database.
+
+This structured approach ensures that all application data flows are robust
+against common data validation issues and are easy to maintain and extend.
+"""
 from datetime import datetime, date
 from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
