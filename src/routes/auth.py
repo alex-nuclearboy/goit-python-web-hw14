@@ -1,3 +1,26 @@
+"""
+Authentication Module
+
+This module provides endpoints for user authentication processes, including
+signup, login, password reset, and email verification. It uses FastAPI's
+dependency injection system to manage authentication states and rate limiting
+to secure the endpoints against abuse.
+
+The module integrates with SQLAlchemy for database operations, FastAPI-Mail
+for sending emails, and JWT tokens for secure and stateless authentication.
+It includes functionalities such as user registration, login, email
+confirmation, password reset requests, and actual password reset confirmation
+through secure tokens.
+
+All endpoints are protected with rate limiting to prevent abuse and ensure the
+service's stability. The module uses dependency injections for database
+sessions and current user identification, ensuring that requests are handled
+securely and efficiently.
+
+This module uses HTTPBearer as a security scheme to protect endpoints that
+require user identification. OAuth2PasswordBearer is used for handling login
+data securely.
+"""
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -42,7 +65,22 @@ async def signup(
     background_tasks: BackgroundTasks,
     request: Request,
     db: Session = Depends(get_db)
-):
+) -> UserResponse:
+    """
+    Register a new user in the system and send an email verification link.
+
+    Args:
+        body (UserModel): User data (username, email, password).
+        background_tasks (BackgroundTasks): Background tasks for email sending.
+        request (Request): Request object to access headers and other details.
+        db (Session): Database session dependency.
+
+    Returns:
+        UserResponse: The created user data and a success message.
+
+    Raises:
+        HTTPException: 409 Conflict if user already exists.
+    """
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(
@@ -76,7 +114,23 @@ async def signup(
 async def login(
     body: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
-):
+) -> TokenModel:
+    """
+    Authenticate a user using email and password, returning JWT access and
+    refresh tokens.
+
+    Args:
+        body (OAuth2PasswordRequestForm): The form data containing the email
+                                          and password.
+        db (Session): Database session dependency.
+
+    Returns:
+        TokenModel: Access and refresh JWT tokens.
+
+    Raises:
+        HTTPException: 401 Unauthorized if login details are incorrect or
+                       if the email is not confirmed.
+    """
     user = await repository_users.get_user_by_email(body.username, db)
 
     if user is None:
@@ -126,7 +180,23 @@ async def login(
 async def refresh_token(
     credentials: HTTPAuthorizationCredentials = Security(security),
     db: Session = Depends(get_db)
-):
+) -> TokenModel:
+    """
+    Refreshes authentication by validating an existing refresh token and
+    issuing new tokens.
+
+    Args:
+        credentials (HTTPAuthorizationCredentials): Credentials containing
+                                                    the refresh token.
+        db (Session): Database session dependency.
+
+    Returns:
+        TokenModel: New access and refresh JWT tokens.
+
+    Raises:
+        HTTPException: 401 Unauthorized if the refresh token is invalid
+                       or expired.
+    """
     token = credentials.credentials
     email = await auth_service.decode_refresh_token(token)
     user = await repository_users.get_user_by_email(email, db)
@@ -162,7 +232,21 @@ async def refresh_token(
         ),
         dependencies=[Depends(RateLimiter(times=10, seconds=60))]
 )
-async def confirm_email(token: str, db: Session = Depends(get_db)):
+async def confirm_email(token: str, db: Session = Depends(get_db)) -> dict:
+    """
+    Confirms a user's email address using a token sent during registration.
+
+    Args:
+        token (str): Verification token received by the user.
+        db (Session): Database session dependency.
+
+    Returns:
+        dict: Confirmation message.
+
+    Raises:
+        HTTPException: 400 Bad Request if the token is invalid or the user
+                       does not exist.
+    """
     email = await auth_service.get_email_from_token(token)
     user = await repository_users.get_user_by_email(email, db)
 
@@ -192,7 +276,25 @@ async def request_email(
     background_tasks: BackgroundTasks,
     request: Request,
     db: Session = Depends(get_db)
-):
+) -> dict:
+    """
+    Sends a new email verification token if the initial token is lost
+    or expired.
+
+    Args:
+        body (RequestEmail): Email of the user requesting a new token.
+        background_tasks (BackgroundTasks): Background tasks for sending email.
+        request (Request): Request object to access host details for link
+                           generation.
+        db (Session): Database session dependency.
+
+    Returns:
+        dict: Message indicating email sending status.
+
+    Raises:
+        HTTPException: 404 Not Found if no user is associated with the
+                       provided email.
+    """
     user = await repository_users.get_user_by_email(body.email, db)
 
     if not user:
@@ -228,7 +330,27 @@ async def password_reset_request(
     background_tasks: BackgroundTasks,
     request: Request,
     db: Session = Depends(get_db)
-):
+) -> dict:
+    """
+    Sends a password reset link to the user's email if registered
+    in the system.
+
+    Args:
+        body (RequestEmail): Contains the email address for sending
+                             the reset link.
+        background_tasks (BackgroundTasks): Used to handle email sending
+                                            in the background.
+        request (Request): Request object to access host details
+                           for link generation.
+        db (Session): Database session dependency.
+
+    Returns:
+        dict: Message indicating if the email was sent or not.
+
+    Raises:
+        HTTPException: 404 Not Found if the email does not exist
+                       in the database.
+    """
     user = await repository_users.get_user_by_email(body.email, db)
 
     if not user:
@@ -261,7 +383,22 @@ async def reset_password(
     token: str,
     new_password: str,
     db: Session = Depends(get_db)
-):
+) -> dict:
+    """
+    Resets the user's password given a valid token and a new password.
+
+    Args:
+        token (str): The token sent to the user's email for password reset.
+        new_password (str): The new password to set for the user.
+        db (Session): Database session dependency.
+
+    Returns:
+        dict: Confirmation message stating the password reset was successful.
+
+    Raises:
+        HTTPException: 404 Not Found if the token is invalid or the user
+                       does not exist.
+    """
     email = await auth_service.get_email_from_token(token)
     user = await repository_users.get_user_by_email(email, db)
 
