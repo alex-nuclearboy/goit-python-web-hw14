@@ -1,61 +1,67 @@
 """
 Contact Management REST API with FastAPI
+----------------------------------------
 
 This FastAPI module provides endpoints for managing user authentication,
 contacts, and user accounts in a Contact Management System. It uses Redis
 for rate limiting API calls and integrates CORS support to handle
 requests from specified origins.
 
-The application includes the following functionalities:
+**The application includes the following functionalities:**
 
-* User Authentication and Registration (CRUD operations):
-  * Register a new user: POST /api/auth/signup
-  * Authenticate and receive tokens: POST /api/auth/login
-  * Refresh authentication tokens: GET /api/auth/refresh_token
-  * Confirm user email via token: GET /api/auth/confirm_email/{token}
-  * Request new email verification token: POST /api/auth/request_email
-  * Initiate password reset process: POST /api/auth/password-reset/
-  * Complete password reset using token: POST /api/auth/password-reset/confirm/
+- *User Authentication and Registration (CRUD operations)*:
 
-* Contact Management (CRUD operations):
-  * List all contacts with search capabilities: GET /api/contacts
-  * Create a new contact: POST /api/contacts
-  * Get details of a specific contact: GET /api/contacts/{contact_id}
-  * Update a specific contact: PATCH /api/contacts/{contact_id}
-  * Delete a specific contact: DELETE /api/contacts/{contact_id}
-  * List contacts with upcoming birthdays: GET /api/contacts/birthdays
+  - Register a new user: ``POST /api/auth/signup``
+  - Authenticate and receive tokens: ``POST /api/auth/login``
+  - Refresh authentication tokens: ``GET /api/auth/refresh_token``
+  - Confirm user email via token: ``GET /api/auth/confirm_email/{token}``
+  - Request new email verification token: ``POST /api/auth/request_email``
+  - Initiate password reset process: ``POST /api/auth/password-reset/``
+  - Complete password reset using token: \
+    ``POST /api/auth/password-reset/confirm/``
 
-* User Profile Management (CRUD operations):
-  * Retrieve current user's profile: GET /api/users/me
-  * Update current user's avatar: PATCH /api/users/avatar
+- *Contact Management (CRUD operations)*:
 
-* Additional Features:
-  * Basic greeting and API documentation direction: GET /
+  - List all contacts with search capabilities: ``GET /api/contacts``
+  - Create a new contact: ``POST /api/contacts``
+  - Get details of a specific contact: ``GET /api/contacts/{contact_id}``
+  - Update a specific contact: ``PATCH /api/contacts/{contact_id}``
+  - Delete a specific contact: ``DELETE /api/contacts/{contact_id}``
+  - List contacts with upcoming birthdays: ``GET /api/contacts/birthdays``
+
+- *User Profile Management (CRUD operations)*:
+
+  - Retrieve current user's profile: ``GET /api/users/me``
+  - Update current user's avatar: ``PATCH /api/users/avatar``
+
+- *Additional Features*:
+
+  - Basic greeting and API documentation direction: ``GET /``
+
 
 Rate limiting is applied globally to ensure fair usage and prevent abuse.
 
 **Functions:**
 
-* startup() : Initialises the Redis connection and sets up rate limiting.
-* read_root() : Returns a greeting message and API documentation path.
+- ``startup()``: Initialises the Redis connection and sets up rate limiting.
+- ``read_root()``: Returns a greeting message and API documentation path.
 
 **Environment Variables:**
 
-* REDIS_HOST: Hostname for Redis server.
-* REDIS_PORT: Port number for Redis server.
+- ``REDIS_HOST``: Hostname for Redis server.
+- ``REDIS_PORT``: Port number for Redis server.
 
-**Usage:**
+Usage
+.....
 
 Run this module to start the FastAPI application:
 
-```bash
-$ uvicorn main:app --host localhost --port 8000 --reload
+.. code-block:: python
+
+    uvicorn main:app --host localhost --port 8000 --reload
 
 Once running, navigate to http://localhost:8000/docs for an interactive
 API documentation and testing interface.
-
-Author: Alex
-Date: 2024-05-24
 """
 
 import redis.asyncio as redis
@@ -100,8 +106,9 @@ async def startup() -> None:
     Sets up the Redis instance for rate limiting and ensures all configurations
     are loaded properly.
 
-    Raises:
-        ConnectionError: If the connection to Redis fails.
+    :return: None
+    :rtype: None
+    :raises ConnectionError: If the connection to Redis fails.
     """
     try:
         r = await redis.Redis(
@@ -120,15 +127,15 @@ async def startup() -> None:
 @app.get("/")
 def read_root() -> JSONResponse:
     """
-    Root endpoint to provide a basic greeting and guide users to the API
-    documentation.
+    Root endpoint to provide a basic greeting and guide users
+    to the API documentation.
 
-    Returns:
-        JSONResponse: A JSON response containing a welcome message and
-                      a suggestion to visit the API docs.
+    :return: A JSON response containing a welcome message and a suggestion \
+             to visit the API docs.
+    :rtype: JSONResponse
     """
     return JSONResponse({
         "message": "Contact Management API is up and running!",
         "next_steps": "Please visit the /docs endpoint for detailed API "
-        "documentation and interactive exploration of endpoints."
+                      "documentation and interactive exploration of endpoints."
     })
