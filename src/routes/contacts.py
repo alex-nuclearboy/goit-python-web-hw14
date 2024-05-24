@@ -1,3 +1,15 @@
+"""
+Contact Management API Module
+
+This module defines the FastAPI routes for a Contact Management Application.
+It includes endpoints for managing contact information such as creating,
+retrieving, updating, and deleting contacts. Additionally, it features
+functionality for listing contacts with upcoming birthdays and standard CRUD
+operations for individual contact entries.
+
+It leverages rate limiting and user authentication to ensure the security and
+efficiency of the API.
+"""
 from datetime import date
 from typing import List
 
@@ -27,7 +39,17 @@ router = APIRouter(prefix='/contacts')
 async def get_upcoming_birthdays(
     db: Session = Depends(get_db),
     current_user: User = Depends(auth_service.get_current_user)
-):
+) -> List:
+    """
+    Retrieve contacts whose birthdays occur within the next week.
+
+    Args:
+        db (Session): Database session to execute database operations.
+        current_user (User): The user session from the authentication system.
+
+    Returns:
+        List[ContactResponse]: A list of contacts with upcoming birthdays.
+    """
     today = date.today()
     upcoming_birthdays = (
         await repository_contacts
@@ -52,7 +74,20 @@ async def read_contacts(
     search: str = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(auth_service.get_current_user)
-):
+) -> List:
+    """
+    Retrieves a list of contacts owned by the authenticated user.
+
+    Args:
+        skip (int): Number of records to skip for pagination.
+        limit (int): Maximum number of records to return.
+        search (str): Optional search term to filter contacts.
+        db (Session): Database session to execute database operations.
+        current_user (User): The user session from the authentication system.
+
+    Returns:
+        List[ContactResponse]: A list of contact entries matching the criteria.
+    """
     contacts = (
         await repository_contacts
         .get_contacts(skip, limit, current_user, search, db)
@@ -74,7 +109,18 @@ async def read_contact(
     contact_id: int,
     current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db)
-):
+) -> ContactResponse:
+    """
+    Retrieves details for a specific contact identified by ID.
+
+    Args:
+        contact_id (int): The unique identifier for the contact.
+        current_user (User): The user session from the authentication system.
+        db (Session): Database session to execute database operations.
+
+    Returns:
+        ContactResponse: The detailed information of the requested contact.
+    """
     contact = (
         await repository_contacts
         .get_contact(contact_id, current_user, db)
@@ -102,7 +148,20 @@ async def create_contact(
     body: ContactModel,
     current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db)
-):
+) -> ContactResponse:
+    """
+    Creates a new contact in the database using provided details.
+
+    Args:
+        body (ContactModel): The data model containing all required fields
+                             for creating a contact.
+        current_user (User): The user session from the authentication system,
+                             indicating the owner of the contact.
+        db (Session): Database session to execute database operations.
+
+    Returns:
+        ContactResponse: The newly created contact's details.
+    """
     return await repository_contacts.create_contact(body, current_user, db)
 
 
@@ -121,7 +180,23 @@ async def update_contact(
     body: ContactUpdate,
     current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db)
-):
+) -> ContactResponse:
+    """
+    Updates an existing contact with new information provided by the user.
+
+    Args:
+        contact_id (int): The unique identifier for the contact to update.
+        body (ContactUpdate): The data model with fields that may be updated.
+        current_user (User): The user session from the authentication system,
+                             indicating the owner of the contact.
+        db (Session): Database session to execute database operations.
+
+    Returns:
+        ContactResponse: The updated contact's details.
+
+    Raises:
+        HTTPException: If the contact is not found.
+    """
     contact = (
         await repository_contacts
         .update_contact(contact_id, body, current_user, db)
@@ -146,7 +221,22 @@ async def remove_contact(
     contact_id: int,
     current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db)
-):
+) -> ContactResponse:
+    """
+    Removes a contact from the database.
+
+    Args:
+        contact_id (int): The unique identifier for the contact to be deleted.
+        current_user (User): The user session from the authentication system,
+                             indicating the owner of the contact.
+        db (Session): Database session to execute database operations.
+
+    Returns:
+        ContactResponse: Details of the deleted contact if successful.
+
+    Raises:
+        HTTPException: If the contact does not exist.
+    """
     contact = (
         await repository_contacts
         .remove_contact(contact_id, current_user, db)
