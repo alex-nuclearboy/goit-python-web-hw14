@@ -1,3 +1,28 @@
+"""
+Contact Management Operations Module
+
+This module provides asynchronous functions to handle CRUD operations
+for contacts in a Contact Management App using FastAPI and SQLAlchemy.
+Functions are designed to interact with a PostgreSQL database
+to manage contact data associated with specific users.
+
+The functionality provided by this module includes creating, retrieving,
+updating, and deleting contacts, as well as fetching contacts with upcoming
+birthdays. Each function is designed to be used as a dependency in FastAPI
+route handlers.
+
+Functions:
+- get_contacts: Fetch a list of contacts with optional search filtering.
+- get_contact: Retrieve a single contact by ID.
+- create_contact: Create a new contact in the database.
+- remove_contact: Delete a contact by ID.
+- update_contact: Update details of an existing contact.
+- get_upcoming_birthdays: Retrieve contacts with birthdays coming up within
+                          the next week.
+
+Each function handles database interactions safely, ensuring that sessions
+are managed correctly to prevent data leaks and maintain integrity.
+"""
 from typing import List, Optional
 from datetime import date, timedelta
 from fastapi import HTTPException
