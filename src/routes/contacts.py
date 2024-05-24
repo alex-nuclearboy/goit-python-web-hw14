@@ -1,5 +1,6 @@
 """
 Contact Management API Module
+-----------------------------
 
 This module defines the FastAPI routes for a Contact Management Application.
 It includes endpoints for managing contact information such as creating,
@@ -43,12 +44,12 @@ async def get_upcoming_birthdays(
     """
     Retrieve contacts whose birthdays occur within the next week.
 
-    Args:
-        db (Session): Database session to execute database operations.
-        current_user (User): The user session from the authentication system.
-
-    Returns:
-        List[ContactResponse]: A list of contacts with upcoming birthdays.
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :param current_user: The user session from the authentication system.
+    :type current_user: User
+    :return: A list of contacts with upcoming birthdays.
+    :rtype: List[ContactResponse]
     """
     today = date.today()
     upcoming_birthdays = (
@@ -78,15 +79,18 @@ async def read_contacts(
     """
     Retrieves a list of contacts owned by the authenticated user.
 
-    Args:
-        skip (int): Number of records to skip for pagination.
-        limit (int): Maximum number of records to return.
-        search (str): Optional search term to filter contacts.
-        db (Session): Database session to execute database operations.
-        current_user (User): The user session from the authentication system.
-
-    Returns:
-        List[ContactResponse]: A list of contact entries matching the criteria.
+    :param skip: Number of records to skip for pagination.
+    :type skip: int
+    :param limit: Maximum number of records to return.
+    :type limit: int
+    :param search: Optional search term to filter contacts.
+    :type search: str
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :param current_user: The user session from the authentication system.
+    :type current_user: User
+    :return: A list of contact entries matching the criteria.
+    :rtype: List[ContactResponse]
     """
     contacts = (
         await repository_contacts
@@ -113,13 +117,15 @@ async def read_contact(
     """
     Retrieves details for a specific contact identified by ID.
 
-    Args:
-        contact_id (int): The unique identifier for the contact.
-        current_user (User): The user session from the authentication system.
-        db (Session): Database session to execute database operations.
-
-    Returns:
-        ContactResponse: The detailed information of the requested contact.
+    :param contact_id: The unique identifier for the contact.
+    :type contact_id: int
+    :param current_user: The user session from the authentication system.
+    :type current_user: User
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :return: The detailed information of the requested contact.
+    :rtype: ContactResponse
+    :raises HTTPException: If the contact is not found.
     """
     contact = (
         await repository_contacts
@@ -152,15 +158,16 @@ async def create_contact(
     """
     Creates a new contact in the database using provided details.
 
-    Args:
-        body (ContactModel): The data model containing all required fields
-                             for creating a contact.
-        current_user (User): The user session from the authentication system,
-                             indicating the owner of the contact.
-        db (Session): Database session to execute database operations.
-
-    Returns:
-        ContactResponse: The newly created contact's details.
+    :param body: The data model containing all required fields \
+                 for creating a contact.
+    :type body: ContactModel
+    :param current_user: The user session from the authentication system, \
+                         indicating the owner of the contact.
+    :type current_user: User
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :return: The newly created contact's details.
+    :rtype: ContactResponse
     """
     return await repository_contacts.create_contact(body, current_user, db)
 
@@ -184,18 +191,18 @@ async def update_contact(
     """
     Updates an existing contact with new information provided by the user.
 
-    Args:
-        contact_id (int): The unique identifier for the contact to update.
-        body (ContactUpdate): The data model with fields that may be updated.
-        current_user (User): The user session from the authentication system,
-                             indicating the owner of the contact.
-        db (Session): Database session to execute database operations.
-
-    Returns:
-        ContactResponse: The updated contact's details.
-
-    Raises:
-        HTTPException: If the contact is not found.
+    :param contact_id: The unique identifier for the contact to update.
+    :type contact_id: int
+    :param body: The data model with fields that may be updated.
+    :type body: ContactUpdate
+    :param current_user: The user session from the authentication system, \
+                         indicating the owner of the contact.
+    :type current_user: User
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :return: The updated contact's details.
+    :rtype: ContactResponse
+    :raises HTTPException: If the contact is not found.
     """
     contact = (
         await repository_contacts
@@ -225,17 +232,16 @@ async def remove_contact(
     """
     Removes a contact from the database.
 
-    Args:
-        contact_id (int): The unique identifier for the contact to be deleted.
-        current_user (User): The user session from the authentication system,
-                             indicating the owner of the contact.
-        db (Session): Database session to execute database operations.
-
-    Returns:
-        ContactResponse: Details of the deleted contact if successful.
-
-    Raises:
-        HTTPException: If the contact does not exist.
+    :param contact_id: The unique identifier for the contact to be deleted.
+    :type contact_id: int
+    :param current_user: The user session from the authentication system, \
+                         indicating the owner of the contact.
+    :type current_user: User
+    :param db: Database session to execute database operations.
+    :type db: Session
+    :return: Details of the deleted contact if successful.
+    :rtype: ContactResponse
+    :raises HTTPException: If the contact does not exist.
     """
     contact = (
         await repository_contacts
