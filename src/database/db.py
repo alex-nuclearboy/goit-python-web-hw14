@@ -1,5 +1,6 @@
 """
 Database Connection Module
+--------------------------
 
 This module sets up the SQLAlchemy engine and session factory for interacting
 with the PostgreSQL database. It configures and provides a sessionmaker
@@ -10,17 +11,18 @@ The module uses settings from the application's configuration to establish
 the database connection, ensuring that all database operations are centralised
 and easily manageable.
 
-Attributes:
-    SQLALCHEMY_DATABASE_URL (str): A string representing the complete database
-                                   connection URL.
-    engine (Engine): SQLAlchemy Engine instance for the database connection.
-    SessionLocal (sessionmaker): Configured sessionmaker that binds
-                                 to the engine and can be used to create
-                                 new session objects.
+**Attributes**:
 
-Functions:
-    get_db(): Generator function that yields a new SQLAlchemy session
-              for each request and closes it once the request is completed.
+- ``SQLALCHEMY_DATABASE_URL (str)``: A string representing the complete \
+    database connection URL.
+- ``engine (Engine)``: SQLAlchemy Engine instance for the database connection.
+- ``SessionLocal (sessionmaker)``: Configured sessionmaker that binds \
+    to the engine and can be used to create new session objects.
+
+**Functions**:
+
+- ``get_db()``: Generator function that yields a new SQLAlchemy session \
+                for each request and closes it once the request is completed.
 """
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -48,9 +50,9 @@ def get_db():
     resources are managed efficiently, with each request getting a clean
     session, ensuring there are no leftover transactions or uncommitted data.
 
-    Yields:
-        sqlalchemy.orm.Session: Yields a database session that is scoped to
-                                the lifetime of a request.
+    :yield: Yields a database session that is scoped to the lifetime \
+            of a request.
+    :rtype: sqlalchemy.orm.Session
     """
     db = SessionLocal()
     try:
