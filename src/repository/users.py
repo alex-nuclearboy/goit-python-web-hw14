@@ -1,3 +1,27 @@
+"""
+User Management Operations Module
+
+This module provides asynchronous operations for managing user data within
+a database environment. It handles operations such as creating new users,
+fetching users by email, updating user authentication tokens, confirming user
+emails, and updating user avatars. The functions make extensive use of
+SQLAlchemy sessions for database interactions, ensuring transactions are
+handled efficiently and safely.
+
+Functions:
+- get_user_by_email: Fetch a user from the database by their email address.
+- create_user: Create a new user in the database and optionally assign
+               a Gravatar image as the avatar.
+- update_token: Update or clear the refresh token associated with a user.
+- confirm_email: Confirm a user's email address and update the database
+                 to reflect this change.
+- update_avatar: Update a user's avatar image URL in the database.
+
+The operations are designed to be used with FastAPI as dependencies within
+route handlers, allowing for seamless integration into web applications
+requiring user management.
+"""
+
 from libgravatar import Gravatar
 from sqlalchemy.orm import Session
 
