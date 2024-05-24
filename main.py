@@ -50,7 +50,7 @@ Run this module to start the FastAPI application:
 
 ```bash
 $ uvicorn main:app --host localhost --port 8000 --reload
-```
+
 Once running, navigate to http://localhost:8000/docs for an interactive
 API documentation and testing interface.
 
