@@ -1,5 +1,6 @@
 """
 Pydantic Models Module
+----------------------
 
 This module contains Pydantic models for user and contact management within
 the application. These models enforce validation and typing, ensuring data
@@ -8,25 +9,25 @@ Each model encapsulates specific fields and validation rules necessary for
 various operations: creating, updating, and retrieving users and contacts.
 
 Models:
-- ContactBase: Base model for contact fields.
-- ContactModel: Inherits from ContactBase for creating new contacts
-                with required fields.
-- ContactUpdate: Allows for partial updates with optional fields.
-- ContactResponse: Extends ContactBase to include contact metadata such as
-                   creation and update timestamps.
-- UserModel: Defines user creation fields.
-- UserDb: Maps to the SQLAlchemy user database model, used for direct
-          interactions with the ORM.
-- UserResponse: Provides a structured response for operations involving
-                user data.
-- TokenModel: Represents authentication tokens returned to the user.
-- RequestEmail: Used for operations requiring a validated email input.
+
+- ``ContactBase``: Base model for contact fields.
+- ``ContactModel``: Inherits from ContactBase for creating new contacts \
+                    with required fields.
+- ``ContactUpdate``: Allows for partial updates with optional fields.
+- ``ContactResponse``: Extends ContactBase to include contact metadata \
+                       such as creation and update timestamps.
+- ``UserModel``: Defines user creation fields.
+- ``UserDb``: Maps to the SQLAlchemy user database model, used for direct \
+              interactions with the ORM.
+- ``UserResponse``: Provides a structured response for operations involving \
+                    user data.
+- ``TokenModel``: Represents authentication tokens returned to the user.
+- ``RequestEmail``: Used for operations requiring a validated email input.
 
 These models simplify request validation, response serialisation, and
 interaction with the ORM, promoting a clean and maintainable codebase.
 
-Usage:
-Models from this module are typically used in route handlers to validate
+Models from this module are used in route handlers to validate
 incoming data, serialize outgoing data, and interact with the database.
 
 This structured approach ensures that all application data flows are robust
@@ -42,14 +43,18 @@ class ContactBase(BaseModel):
     Base model for contact information,
     used as a foundation for other contact-related models.
 
-    Attributes:
-        first_name (str): The first name of the contact.
-        last_name (str): The last name of the contact.
-        email (str): The email address of the contact.
-        phone_number (str): The contact's phone number.
-        birthday (date): The birthday of the contact.
-        additional_info (Optional[str]): Additional information about
-                                         the contact, optional.
+    :param first_name: The first name of the contact.
+    :type first_name: str
+    :param last_name: The last name of the contact.
+    :type last_name: str
+    :param email: The email address of the contact.
+    :type email: str
+    :param phone_number: The contact's phone number.
+    :type phone_number: str
+    :param birthday: The birthday of the contact.
+    :type birthday: date
+    :param additional_info: Additional information about the contact, optional.
+    :type additional_info: Optional[str]
     """
     first_name: str = Field(max_length=50)
     last_name: str = Field(max_length=50)
@@ -62,7 +67,9 @@ class ContactBase(BaseModel):
 class ContactModel(ContactBase):
     """
     A model representing a contact, extending ContactBase
-    without additional fields. This model is used for creating new contacts
+    without additional fields.
+
+    This model is used for creating new contacts
     where all fields are required.
     """
     pass
@@ -72,8 +79,18 @@ class ContactUpdate(BaseModel):
     """
     A model for updating existing contacts. All fields are optional.
 
-    Attributes are identical to ContactBase, but all are optional
-    to allow for partial updates.
+    :param first_name: The first name of the contact.
+    :type first_name: Optional[str]
+    :param last_name: The last name of the contact.
+    :type last_name: Optional[str]
+    :param email: The email address of the contact.
+    :type email: Optional[str]
+    :param phone_number: The contact's phone number.
+    :type phone_number: Optional[str]
+    :param birthday: The birthday of the contact.
+    :type birthday: Optional[date]
+    :param additional_info: Additional information about the contact.
+    :type additional_info: Optional[str]
     """
     first_name: Optional[str] = Field(None, max_length=50)
     last_name: Optional[str] = Field(None, max_length=50)
@@ -88,18 +105,27 @@ class ContactResponse(ContactBase):
     A response model for contact information that extends ContactBase
     with additional fields.
 
-    Attributes:
-        id (int): The unique identifier for the contact.
-        created_at (datetime): The date and time when the contact was
-                               originally created in the system.
-        updated_at (datetime): The date and time when the contact information
-                               was last updated.
+    :param id: The unique identifier for the contact.
+    :type id: int
+    :param created_at: The date and time when the contact was originally \
+                       created in the system.
+    :type created_at: datetime
+    :param updated_at: The date and time when the contact information \
+                       was last updated.
+    :type updated_at: datetime
     """
     id: int
     created_at: datetime
     updated_at: datetime
 
     class Config:
+        """
+        Configuration class for the ContactResponse model.
+
+        :param from_attributes: Indicates that model fields should be \
+            populated from attributes rather than dict keys.
+        :type from_attributes: bool
+        """
         from_attributes = True
 
 
@@ -107,10 +133,12 @@ class UserModel(BaseModel):
     """
     A model representing the data required to create a user.
 
-    Attributes:
-        username (str): The username for the user.
-        email (str): The email address of the user.
-        password (str): The user's password.
+    :param username: The username for the user.
+    :type username: str
+    :param email: The email address of the user.
+    :type email: str
+    :param password: The user's password.
+    :type password: str
     """
     username: str = Field(min_length=5, max_length=16)
     email: str
@@ -121,14 +149,19 @@ class UserDb(BaseModel):
     """
     A database model for a user, to interface directly with SQLAlchemy.
 
-    Attributes:
-        id (int): The unique identifier for the user.
-        username (str): The username of the user.
-        email (str): The email address of the user.
-        created_at (datetime): The timestamp when the user was created.
-        updated_at (datetime): The timestamp when the user information
-                               was last updated.
-        avatar (str): A URL to the user's avatar.
+    :param id: The unique identifier for the user.
+    :type id: int
+    :param username: The username of the user.
+    :type username: str
+    :param email: The email address of the user.
+    :type email: str
+    :param created_at: The timestamp when the user was created.
+    :type created_at: datetime
+    :param updated_at: The timestamp when the user information \
+                       was last updated.
+    :type updated_at: datetime
+    :param avatar: A URL to the user's avatar.
+    :type avatar: str
     """
     id: int
     username: str
@@ -138,6 +171,13 @@ class UserDb(BaseModel):
     avatar: str
 
     class Config:
+        """
+        Configuration class for the UserDb model.
+
+        :param from_attributes: Indicates that model fields should be \
+            populated from attributes rather than dict keys.
+        :type from_attributes: bool
+        """
         from_attributes = True
 
 
@@ -147,10 +187,11 @@ class UserResponse(BaseModel):
     a success message. This model is typically used to send user
     data back to the client after a successful operation.
 
-    Attributes:
-        user (UserDb): The user data retrieved from the database.
-        detail (str): A message detailing the result of the operation,
-                      e.g., "User successfully created".
+    :param user: The user data retrieved from the database.
+    :type user: UserDb
+    :param detail: A message detailing the result of the operation, \
+                   e.g., "User successfully created".
+    :type detail: str
     """
     user: UserDb
     detail: str = "User successfully created"
@@ -162,11 +203,13 @@ class TokenModel(BaseModel):
     refresh tokens. This model is used to provide JWTs to the client upon
     successful authentication.
 
-    Attributes:
-        access_token (str): The JWT used for accessing protected endpoints.
-        refresh_token (str): The JWT used for obtaining a new access token
-                             without requiring re-authentication.
-        token_type (str): Indicates the type of the tokens, typically "bearer".
+    :param access_token: The JWT used for accessing protected endpoints.
+    :type access_token: str
+    :param refresh_token: The JWT used for obtaining a new access token \
+                          without requiring re-authentication.
+    :type refresh_token: str
+    :param token_type: Indicates the type of the tokens, typically "bearer".
+    :type token_type: str
     """
     access_token: str
     refresh_token: str
@@ -179,9 +222,7 @@ class RequestEmail(BaseModel):
     require user email input. This could include operations like sending
     password reset links or verifying an email address.
 
-    Attributes:
-        email (EmailStr): A valid email address provided by the user.
-                          The EmailStr type ensures that the email provided
-                          conforms to the format of a standard email address.
+    :param email: A valid email address provided by the user.
+    :type email: EmailStr
     """
     email: EmailStr
