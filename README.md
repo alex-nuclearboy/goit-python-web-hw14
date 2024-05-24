@@ -1,9 +1,7 @@
 # Contact Management API
 
 This repository is an extension of a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task).
-The original project includes a REST API for managing contact information, built with FastAPI and SQLAlchemy, and 
-leverages PostgreSQL as the backend database. It suports  basic CRUD operations for contact management along with additional functionalities such as searching for contacts by various attributes and retrieving contacts with upcoming birthdays. 
-This version enhances the project with advanced functionalities including user authentication and authorization.
+The original project includes a REST API for managing contact information, built with FastAPI and SQLAlchemy, and leverages PostgreSQL as the backend database. It supports basic CRUD operations for contact management along with additional functionalities such as searching for contacts by various attributes, retrieving contacts with upcoming birthdays, user authentication, and authorization. This extended version adds comprehensive project documentation that can be generated using Sphinx.
 
 ## Key Features
 
@@ -25,6 +23,8 @@ This version enhances the project with advanced functionalities including user a
 
 #### Extended:
 
+- **Detailed Documentation:** Comprehensive documentation is added and can be generated using Sphinx.
+
 ## Technologies Used
 
 - **FastAPI:** For creating the REST API.
@@ -34,6 +34,7 @@ This version enhances the project with advanced functionalities including user a
 - **Alembic:** For database migrations.
 - **Docker:** Used to containerize the application and PostgreSQL database.
 - **Poetry:** For managing Python package dependencies and virtual environments.
+- **Sphinx:** For generating project documentation.
 
 ## Installation and Usage
 
@@ -55,6 +56,41 @@ git clone https://github.com/alex-nuclearboy/goit-python-web-hw14.git
 cd goit-python-web-hw14
 ```
 
+- **Environment Setup**
+
+Create a `.env` file with the following content and substitute your values:
+
+```plaintext
+# Database PostgreSQL
+POSTGRES_DB=rest_app
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+
+SQLALCHEMY_DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+
+# JWT authentication
+SECRET_KEY=
+ALGORITHM=HS256
+
+# Email service
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM=
+MAIL_PORT=
+MAIL_SERVER=
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Cloud Storage
+CLOUDINARY_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
 - **Activate the Poetry Environment and Install Dependencies:**
 ```bash
 poetry shell
@@ -73,14 +109,19 @@ alembic upgrade head
 
 ### Starting
 
-- **Running the FastAPI application** using Uvicorn:
-```bash
-uvicorn main:app --host localhost --port 8000 --reload
-```
+- **Running the FastAPI application**:
+    - Unix/Linux/macOS:
+    ```bash
+    python3 run_app.py
+    ```
+    - Windows:
+    ```powershell
+    py run_app.py
+    ```
 
 This command will start the API server accessible at [http://localhost:8000](http://localhost:8000).
 
-## API Documentation
+## Using the API with Swagger UI
 
 Once the server is running, you can access the Swagger UI to test the API endpoints at [http://localhost:8000/docs](http://localhost:8000/docs).
 
@@ -106,6 +147,28 @@ Send a POST request to `http://localhost:8000/api/auth/login` with `email` and `
 - **Access Secure Endpoints:**
 
 Include the Authorization: Bearer `<access_token>` header in requests to secured endpoints.
+
+## Generating and Viewing Project Documentation
+
+The project includes comprehensive documentation that can be generated using Sphinx. To generate and view the documentation:
+
+- **Navigate to the docs Directory:**
+```bash
+cd docs
+```
+
+- **Generate the Documentation:**
+    - Unix/Linux/macOS:
+    ```bash
+    make html
+    ```
+    - Windows:
+    ```powershell
+    make.bat html
+    ```
+- **View the Documentation:**
+
+Open the generated HTML documentation by navigating to the _build/html directory and opening the index.html file in a web browser.
 
 ## Stopping the Application and Exiting
 
