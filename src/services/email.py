@@ -1,5 +1,6 @@
 """
 Email Handling Module
+---------------------
 
 This module is responsible for sending emails using FastAPI-Mail, supporting
 asynchronous operations. It configures email settings and defines functions
@@ -42,21 +43,23 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email(email: EmailStr, username: str, host: str):
+async def send_email(email: EmailStr, username: str, host: str) -> None:
     """
     Asynchronously sends a verification email to a user with a link
     to verify their email address.
 
-    Args:
-        email (EmailStr): The email address of the recipient.
-        username (str): The username of the recipient, used for
-                        personalizing the email.
-        host (str): The base URL of the host, used to create the link
-                    for email verification.
-
-    Raises:
-        HTTPException: An error occurs if the email could not be sent due to
-                       server or configuration issues.
+    :param email: The email address of the recipient.
+    :type email: EmailStr
+    :param username: The username of the recipient, used for personalising \
+                     the email.
+    :type username: str
+    :param host: The base URL of the host, used to create the link for \
+                 email verification.
+    :type host: str
+    :return: None
+    :rtype: None
+    :raises HTTPException: An error occurs if the email could not be sent \
+                           due to server or configuration issues.
     """
     try:
         # Generate a verification token for the email
@@ -81,7 +84,7 @@ async def send_email(email: EmailStr, username: str, host: str):
         raise HTTPException(status_code=500, detail="Email could not be sent.")
 
 
-async def send_reset_email(email: EmailStr, username: str, host: str):
+async def send_reset_email(email: EmailStr, username: str, host: str) -> None:
     """
     Asynchronously sends a password reset email to a specified user.
 
@@ -89,17 +92,19 @@ async def send_reset_email(email: EmailStr, username: str, host: str):
     containing a token that the user can use to verify their identity and
     reset their password through a specified interface, such as Swagger.
 
-    Args:
-        email (EmailStr): The email address of the user who requested
-                          a password reset.
-        username (str): The username of the user to whom the email
-                        will be addressed.
-        host (str): The base URL of the server where the password reset
-                    can be processed.
+    :param email: The email address of the user who requested a password reset.
+    :type email: EmailStr
+    :param username: The username of the user to whom the email \
+                     will be addressed.
+    :type username: str
+    :param host: The base URL of the server where the password reset \
+                 can be processed.
+    :type host: str
+    :return: None
+    :rtype: None
+    :raises HTTPException: An error occurs if the email could not be sent \
+                           due to server or configuration issues.
 
-    Raises:
-        HTTPException: An error occurs if the email could not be sent due to
-                       server or configuration issues.
     """
     try:
         token_verification = auth_service.create_email_token({'sub': email})
