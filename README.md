@@ -55,7 +55,7 @@ git clone https://github.com/alex-nuclearboy/goit-python-web-hw14.git
 cd goit-python-web-hw14
 ```
 
-- **Set up the environment**
+- **To set up the environment** use the following commands depending on your operating system:
     - Unix/Linux/macOS:
     ```bash
     cp .env.example .env
@@ -92,7 +92,7 @@ The project includes comprehensive documentation that can be generated using Sph
 cd docs
 ```
 
-- **Generate the documentation:**
+- **To generate the documentation** use the following commands depending on your operating system:
     - Unix/Linux/macOS:
     ```bash
     make html
@@ -107,6 +107,7 @@ Open the generated HTML documentation by navigating to the `_build/html` directo
 
 ### Start the FastAPI Application
 
+- **To launch the FastAPI server** use the following commands depending on your operating system:
     - Unix/Linux/macOS:
     ```bash
     python3 run_app.py
