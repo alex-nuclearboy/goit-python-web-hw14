@@ -12,13 +12,13 @@ birthdays. Each function is designed to be used as a dependency in FastAPI
 route handlers.
 
 Functions:
-- get_contacts: Fetch a list of contacts with optional search filtering.
-- get_contact: Retrieve a single contact by ID.
-- create_contact: Create a new contact in the database.
-- remove_contact: Delete a contact by ID.
-- update_contact: Update details of an existing contact.
-- get_upcoming_birthdays: Retrieve contacts with birthdays coming up within
-                          the next week.
+  - ``get_contacts``: Fetch a list of contacts with optional search filtering.
+  - ``get_contact``: Retrieve a single contact by ID.
+  - ``create_contact``: Create a new contact in the database.
+  - ``remove_contact``: Delete a contact by ID.
+  - ``update_contact``: Update details of an existing contact.
+  - ``get_upcoming_birthdays``: Retrieve contacts with birthdays coming up \
+                                within the next week.
 
 Each function handles database interactions safely, ensuring that sessions
 are managed correctly to prevent data leaks and maintain integrity.
@@ -41,16 +41,19 @@ async def get_contacts(skip: int,
     Retrieves a list of contacts from the database,
     with optional search filtering and pagination.
 
-    Args:
-        skip (int): Number of entries to skip for pagination.
-        limit (int): Maximum number of entries to return.
-        user (User): The user whose contacts are to be retrieved.
-        search (str): Search query to filter contacts by any attribute
-                      (first name, last name, email, phone number).
-        db (Session): SQLAlchemy session for database access.
-
-    Returns:
-        List[Contact]: A list of contacts that match the criteria.
+    :param skip: Number of entries to skip for pagination.
+    :type skip: int
+    :param limit: Maximum number of entries to return.
+    :type skip: int
+    :param user: The user whose contacts are to be retrieved.
+    :type user: User
+    :param search: Search query to filter contacts by any attribute \
+                   (first name, last name, email, phone number).
+    :type search: str
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :return: A list of contacts that match the criteria
+    :rtype: List[Contact]
     """
     query = db.query(Contact).filter(Contact.user_id == user.id)
     if search:
@@ -68,13 +71,14 @@ async def get_contact(contact_id: int, user: User, db: Session) -> Contact:
     """
     Retrieves a single contact by its ID.
 
-    Args:
-        contact_id (int): The unique identifier of the contact.
-        user (User): The user whose contact is to be retrieved.
-        db (Session): SQLAlchemy session for database access.
-
-    Returns:
-        Contact: The contact object if found, otherwise None.
+    :param contact_id: The unique identifier of the contact.
+    :type contact_id: int
+    :param user: The user whose contact is to be retrieved.
+    :type user: User
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :return: The contact object if found, otherwise None.
+    :rtype: Contact
     """
     return (
         db.query(Contact)
@@ -94,13 +98,15 @@ async def create_contact(body: ContactModel,
     """
     Creates a new contact in the database.
 
-    Args:
-        body (ContactModel): A Pydantic model containing contact data.
-        user (User): The user whose contact is to be created.
-        db (Session): SQLAlchemy session for database access.
-
-    Returns:
-        Contact: The newly created contact with populated fields.
+    :param body: A Pydantic model containing contact data.
+    :type body: ContactModel
+    :param user: The user whose contact is to be created.
+    :type user: User
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :return: The newly created contact with populated fields.
+    :rtype: Contact
+    :raises HTTPException: If an error occurs during the creation process.
     """
     try:
         contact = Contact(first_name=body.first_name,
@@ -125,14 +131,14 @@ async def remove_contact(contact_id: int,
     """
     Deletes a contact from the database by its ID.
 
-    Args:
-        contact_id (int): The unique identifier of the contact.
-        user (User): The user whose contact is to be deleted.
-        db (Session): SQLAlchemy session for database access.
-
-    Returns:
-        Contact | None: The deleted contact object if found and deleted,
-                        otherwise None.
+    :param contact_id: The unique identifier of the contact.
+    :type contact_id: int
+    :param user: The user whose contact is to be deleted.
+    :type user: User
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :return: The deleted contact object if found and deleted, otherwise None.
+    :rtype: Contact | None
     """
     contact = (
         db.query(Contact)
@@ -158,15 +164,17 @@ async def update_contact(contact_id: int,
     """
     Updates an existing contact's information in the database.
 
-    Args:
-        contact_id (int): The unique identifier of the contact to update.
-        body (ContactUpdate): A Pydantic model containing the fields to update.
-        user (User): The user whose contact is to be updated.
-        db (Session): SQLAlchemy session for database access.
-
-    Returns:
-        Optional[Contact]: The updated contact object if the update
-                           was successful, otherwise None.
+    :param contact_id: The unique identifier of the contact to update.
+    :type contact_id: int
+    :param body: A Pydantic model containing the fields to update.
+    :type body: ContactUpdate
+    :param user: The user whose contact is to be updated.
+    :type user: User
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :return: The updated contact object if the update was successful, \
+             otherwise None.
+    :rtype: Optional[Contact]
     """
     contact = (
         db.query(Contact)
@@ -193,15 +201,15 @@ async def get_upcoming_birthdays(db: Session,
     """
     Retrieves contacts whose birthdays are coming up within the next week.
 
-    Args:
-        db (Session): SQLAlchemy session for database access.
-        user (User): The user whose contacts' birthdays are being queried.
-        today (date): The current date to calculate the range
-                      of upcoming birthdays.
-
-    Returns:
-        List[Contact]: A list of contacts whose birthdays are
-                       within the next week.
+    :param db: SQLAlchemy session for database access.
+    :type db: Session
+    :param user: The user whose contacts' birthdays are being queried.
+    :type user: User
+    :param today: The current date to calculate the range of upcoming \
+                  birthdays.
+    :type today: date
+    :return: A list of contacts whose birthdays are within the next week.
+    :rtype: List[Contact]
     """
     in_a_week = today + timedelta(days=7)
     if today.month == in_a_week.month:
