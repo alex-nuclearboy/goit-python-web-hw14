@@ -13,13 +13,14 @@ birthdays. Each function is designed to be used as a dependency in FastAPI
 route handlers.
 
 Functions:
-  - ``get_contacts``: Fetch a list of contacts with optional search filtering.
-  - ``get_contact``: Retrieve a single contact by ID.
-  - ``create_contact``: Create a new contact in the database.
-  - ``remove_contact``: Delete a contact by ID.
-  - ``update_contact``: Update details of an existing contact.
-  - ``get_upcoming_birthdays``: Retrieve contacts with birthdays coming up \
-                                within the next week.
+
+- ``get_contacts``: Fetch a list of contacts with optional search filtering.
+- ``get_contact``: Retrieve a single contact by ID.
+- ``create_contact``: Create a new contact in the database.
+- ``remove_contact``: Delete a contact by ID.
+- ``update_contact``: Update details of an existing contact.
+- ``get_upcoming_birthdays``: Retrieve contacts with birthdays coming up \
+                              within the next week.
 
 Each function handles database interactions safely, ensuring that sessions
 are managed correctly to prevent data leaks and maintain integrity.
