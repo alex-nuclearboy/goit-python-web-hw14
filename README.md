@@ -76,14 +76,14 @@ cd goit-python-web-hw14
 ```
 
 - **To set up the environment** use the following commands depending on your operating system:
-    - Unix/Linux/macOS:
-    ```bash
-    cp .env.example .env
-    ```
-    - Windows:
-    ```powershell
-    copy .env.example .env
-    ```
+   - Unix/Linux/macOS:
+   ```bash
+   cp .env.example .env
+   ```
+   - Windows:
+   ```powershell
+   copy .env.example .env
+   ```
 
 Adjust `.env` file with your settings
 
@@ -113,29 +113,39 @@ cd docs
 ```
 
 - **To generate the documentation** use the following commands depending on your operating system:
-    - Unix/Linux/macOS:
-    ```bash
-    make html
-    ```
-    - Windows:
-    ```powershell
-    make.bat html
-    ```
-- **View the documentation:**
-
-Open the generated HTML documentation by navigating to the `_build/html` directory and opening the `index.html` file in a web browser.
+   - Unix/Linux/macOS:
+   ```bash
+   make html
+   ```
+   - Windows:
+   ```powershell
+   make.bat html
+   ```
+- **View the generated HTML documentation** in a web browser:
+   - Unix/Linux:
+   ```bash
+   xdg-open _build/html/index.html
+   ```
+   - macOS:
+   ```bash
+   open _build/html/index.html
+   ```
+   - Windows:
+   ```powershell
+   start _build\html\index.html
+   ```
 
 ### Starting the FastAPI Application
 
 - **To launch the FastAPI server** use the following commands depending on your operating system:
-    - Unix/Linux/macOS:
-    ```bash
-    python3 run_app.py
-    ```
-    - Windows:
-    ```powershell
-    py run_app.py
-    ```
+   - Unix/Linux/macOS:
+   ```bash
+   python3 run_app.py
+   ```
+   - Windows:
+   ```powershell
+   py run_app.py
+   ```
 
 This command will start the API server accessible at [http://localhost:8000](http://localhost:8000).
 
