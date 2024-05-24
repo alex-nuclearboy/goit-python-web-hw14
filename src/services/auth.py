@@ -1,5 +1,6 @@
 """
 Authentication and Authorisation Module
+---------------------------------------
 
 This module provides a comprehensive suite of functionalities for handling
 authentication and authorisation in a Contact Management application.
@@ -12,9 +13,10 @@ library for password hashing, and the python-jose library for JWT operations,
 integrating seamlessly with FastAPI's dependency injection system to ensure
 secure and scalable user authentication.
 
-Classes:
-- Auth: The main class that provides methods for user authentication and token
-        handling.
+**Classes**:
+
+- ``Auth``: The main class that provides methods for user authentication \
+            and token handling.
 """
 
 from typing import Optional
@@ -49,12 +51,12 @@ class Auth:
         """
         Verifies a given plaintext password against the hashed password.
 
-        Args:
-            plain_password (str): The plaintext password to verify.
-            hashed_password (str): The hash of the password to compare against.
-
-        Returns:
-            bool: True if the password is correct, False otherwise.
+        :param plain_password: The plaintext password to verify.
+        :type plain_password: str
+        :param hashed_password: The hash of the password to compare against.
+        :type hashed_password: str
+        :return: True if the password is correct, False otherwise.
+        :rtype: bool
         """
         return self.pwd_context.verify(plain_password, hashed_password)
 
@@ -62,11 +64,10 @@ class Auth:
         """
         Generates a password hash from a plaintext password.
 
-        Args:
-            password (str): The plaintext password to hash.
-
-        Returns:
-            str: The hashed password.
+        :param password: The plaintext password to hash.
+        :type password: str
+        :return: The hashed password.
+        :rtype: str
         """
         return self.pwd_context.hash(password)
 
@@ -76,14 +77,13 @@ class Auth:
         """
         Creates a JWT access token with an optional expiry delta.
 
-        Args:
-            data (dict): The data to encode in the token, typically containing
-                         the user's identity.
-            expires_delta (Optional[int]): The number of seconds until
-                                           the token expires.
-
-        Returns:
-            str: The encoded JWT access token.
+        :param data: The data to encode in the token, typically containing \
+                     the user's identity.
+        :type data: dict
+        :param expires_delta: The number of seconds until the token expires.
+        :type expires_delta: Optional[float]
+        :return: The encoded JWT access token.
+        :rtype: str
         """
         to_encode = data.copy()
         if expires_delta:
@@ -103,13 +103,12 @@ class Auth:
         """
         Creates a JWT refresh token used to obtain new access tokens.
 
-        Args:
-            data (dict): The data to encode in the token.
-            expires_delta (Optional[int]): The number of seconds until the
-                                           token expires.
-
-        Returns:
-            str: The encoded JWT refresh token.
+        :param data: The data to encode in the token.
+        :type data: dict
+        :param expires_delta: The number of seconds until the token expires.
+        :type expires_delta: Optional[float]
+        :return: The encoded JWT refresh token.
+        :rtype: str
         """
         to_encode = data.copy()
         if expires_delta:
@@ -128,14 +127,11 @@ class Auth:
         """
         Decodes a JWT refresh token and validates its scope.
 
-        Args:
-            refresh_token (str): The refresh token to decode.
-
-        Returns:
-            str: The user's email extracted from the token if valid.
-
-        Raises:
-            HTTPException: If the token is invalid or has the wrong scope.
+        :param refresh_token: The refresh token to decode.
+        :type refresh_token: str
+        :return: The user's email extracted from the token if valid.
+        :rtype: str
+        :raises HTTPException: If the token is invalid or has the wrong scope.
         """
         try:
             payload = jwt.decode(
@@ -155,17 +151,14 @@ class Auth:
         """
         Retrieves the current user from a JWT token.
 
-        Args:
-            token (str): The JWT token to decode.
-            db (Session): The database session used to retrieve user data.
-
-        Returns:
-            User: The user object retrieved from the database.
-
-        Raises:
-            HTTPException: If the token is invalid or the user does not exist.
-
-
+        :param token: The JWT token to decode.
+        :type token: str
+        :param db: The database session used to retrieve user data.
+        :type db: Session
+        :return: The user object retrieved from the database.
+        :rtype: User
+        :raises HTTPException: If the token is invalid or the user \
+                               does not exist.
         """
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -201,11 +194,10 @@ class Auth:
         """
         Creates a token for email verification purposes.
 
-        Args:
-            data (dict): The data to include in the token, the user's email.
-
-        Returns:
-            str: The encoded token.
+        :param data: The data to include in the token, the user's email.
+        :type data: dict
+        :return: The encoded token.
+        :rtype: str
         """
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(days=7)
@@ -219,14 +211,11 @@ class Auth:
         """
         Extracts the user's email address from a verification token.
 
-        Args:
-            token (str): The token from which to extract the email.
-
-        Returns:
-            str: The email address decoded from the token.
-
-        Raises:
-            HTTPException: If the token is invalid or cannot be processed.
+        :param token: The token from which to extract the email.
+        :type token: str
+        :return: The email address decoded from the token.
+        :rtype: str
+        :raises HTTPException: If the token is invalid or cannot be processed.
         """
         try:
             payload = jwt.decode(
