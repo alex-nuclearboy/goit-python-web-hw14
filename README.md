@@ -56,9 +56,14 @@ cd goit-python-web-hw14
 ```
 
 - **Set up the environment**
-```bash
-cp .env.example .env
-```
+    - Unix/Linux/macOS:
+    ```bash
+    cp .env.example .env
+    ```
+    - Windows:
+    ```powershell
+    copy .env.example .env
+    ```
 
 Adjust `.env` file with your settings
 
