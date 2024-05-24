@@ -1,7 +1,6 @@
 # Contact Management API
 
-This repository is an extension of a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task).
-The original project includes a REST API for managing contact information, built with FastAPI and SQLAlchemy, and leverages PostgreSQL as the backend database. It supports basic CRUD operations for contact management along with additional functionalities such as searching for contacts by various attributes, retrieving contacts with upcoming birthdays, user authentication, and authorization. This extended version adds comprehensive project documentation that can be generated using Sphinx.
+This repository extends a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task), enhancing a REST API for contact management with comprehensive documentation generated using Sphinx. Built with FastAPI and SQLAlchemy, it supports advanced features including user authentication, contact searches, rate limiting, and integration with Cloudinary for avatar updates. This extension focuses on improved documentation and usability.
 
 ## Key Features
 
@@ -21,9 +20,9 @@ The original project includes a REST API for managing contact information, built
 - **CORS Support:** Enables Cross-Origin Resource Sharing (CORS) for the REST API.
 - **User Avatar Update:** Integrates with the Cloudinary service to allow users to update their avatar images.
 
-#### Extended:
+#### New in this extension:
 
-- **Detailed Documentation:** Comprehensive documentation is added and can be generated using Sphinx.
+- **Enhanced Documentation:** Comprehensive documentation is added and can be generated using Sphinx.
 
 ## Technologies Used
 
@@ -36,7 +35,7 @@ The original project includes a REST API for managing contact information, built
 - **Poetry:** For managing Python package dependencies and virtual environments.
 - **Sphinx:** For generating project documentation.
 
-## Installation and Usage
+## Getting Started
 
 ### Prerequisites
 
@@ -44,72 +43,65 @@ The original project includes a REST API for managing contact information, built
 - **Python:** Ensure Python 3.10 or higher is installed on your system.
 - **Poetry:** This project uses Poetry for dependency management. Install Poetry by following the instructions on the [official Poetry website](https://python-poetry.org/docs/#installation).
 
-### Setting Up the Project
+### Installation
 
-- **Clone the Repository:**
+- **Clone the repository:**
 ```bash
 git clone https://github.com/alex-nuclearboy/goit-python-web-hw14.git
 ```
 
-- **Navigate to the Project Directory:**
+- **Navigate to the project directory:**
 ```bash
 cd goit-python-web-hw14
 ```
 
-- **Environment Setup**
-
-Create a `.env` file with the following content and substitute your values:
-
-```plaintext
-# Database PostgreSQL
-POSTGRES_DB=rest_app
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-
-SQLALCHEMY_DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-
-# JWT authentication
-SECRET_KEY=
-ALGORITHM=HS256
-
-# Email service
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_FROM=
-MAIL_PORT=
-MAIL_SERVER=
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# Cloud Storage
-CLOUDINARY_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+- **Set up the environment**
+```bash
+cp .env.example .env
 ```
 
-- **Activate the Poetry Environment and Install Dependencies:**
+Adjust `.env` file with your settings
+
+- **Activate the Poetry environment and install dependencies:**
 ```bash
 poetry shell
 poetry install --no-root
 ```
 
-- **Start the PostgreSQL Server:**
+- **Start the PostgreSQL server:**
 ```bash
 docker compose up -d
 ```
 
-- **Run Alembic Migrations**
+- **Run database migrations**
 ```bash
 alembic upgrade head
 ```
 
-### Starting
+### Generating and Viewing Project Documentation
 
-- **Running the FastAPI application**:
+The project includes comprehensive documentation that can be generated using Sphinx. To generate and view the documentation:
+
+- **Navigate to the `docs` directory:**
+```bash
+cd docs
+```
+
+- **Generate the documentation:**
+    - Unix/Linux/macOS:
+    ```bash
+    make html
+    ```
+    - Windows:
+    ```powershell
+    make.bat html
+    ```
+- **View the documentation:**
+
+Open the generated HTML documentation by navigating to the `_build/html` directory and opening the index.html file in a web browser.
+
+### Start the FastAPI Application
+
     - Unix/Linux/macOS:
     ```bash
     python3 run_app.py
@@ -148,44 +140,22 @@ Send a POST request to `http://localhost:8000/api/auth/login` with `email` and `
 
 Include the Authorization: Bearer `<access_token>` header in requests to secured endpoints.
 
-## Generating and Viewing Project Documentation
+## Shutting Down and Exiting
 
-The project includes comprehensive documentation that can be generated using Sphinx. To generate and view the documentation:
+### Stopping the Application
 
-- **Navigate to the docs Directory:**
-```bash
-cd docs
-```
+To stop the FastAPI application, you simply need to press `CTRL+C` in the terminal window where the server is running. This command will terminate the server process.
 
-- **Generate the Documentation:**
-    - Unix/Linux/macOS:
-    ```bash
-    make html
-    ```
-    - Windows:
-    ```powershell
-    make.bat html
-    ```
-- **View the Documentation:**
-
-Open the generated HTML documentation by navigating to the `_build/html` directory and opening the index.html file in a web browser.
-
-## Stopping the Application and Exiting
-
-When you are finished using the application, follow these steps to properly shut down the server and exit the development environment:
-
-- **Stopping the Application:**
-
-To stop the FastAPI application, you simply need to press `CTRL+C` in the terminal window where the server is running. This will terminate the server process.
-
-- **Shutting Down the PostgreSQL Server:**
+### Shutting down the PostgreSQL Server:
 
 If you've started the PostgreSQL server using Docker Compose and wish to stop it, you can use the following command:
+
+- **To stop and remove containers, networks, and volumes:**
 ```bash
 docker compose down
 ```
 
-This command stops the running containers and removes the containers created by docker compose up, along with their networks. It’s a clean way to ensure that no unnecessary Docker processes remain running. If you wish to stop the container but not remove it, you can use:
+- **To stop the server without removing resources:**
 ```bash
 docker compose stop
 ```
