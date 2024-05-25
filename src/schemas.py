@@ -140,9 +140,9 @@ class UserModel(BaseModel):
     :param password: The user's password.
     :type password: str
     """
-    username: str = Field(min_length=5, max_length=16)
+    username: str = Field(min_length=4, max_length=16)
     email: str
-    password: str = Field(min_length=6, max_length=10)
+    password: str = Field(min_length=6, max_length=15)
 
 
 class UserDb(BaseModel):
