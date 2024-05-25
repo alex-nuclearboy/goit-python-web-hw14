@@ -190,7 +190,7 @@ async def update_contact(contact_id: int,
     )
 
     if contact:
-        update_data = body.dict(exclude_unset=True)
+        update_data = body.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(contact, key, value)
         db.commit()
