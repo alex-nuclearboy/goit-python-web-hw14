@@ -18,30 +18,30 @@ operations and interactions.
 
 **Test Methods**:
 
-- ``test_get_contacts``: Verifies fetching multiple contacts with pagination
+- ``test_get_contacts``: Verifies fetching multiple contacts with pagination \
                          and optional search.
-- ``test_get_contact_found``: Ensures that retrieving an existing contact
+- ``test_get_contact_found``: Ensures that retrieving an existing contact \
                               by ID works correctly.
-- ``test_get_contact_not_found``: Checks the behavior when an attempt is made
+- ``test_get_contact_not_found``: Checks the behavior when an attempt is made \
                                   to retrieve a non-existent contact.
-- ``test_create_contact``: Tests the creation of a new contact and checks
+- ``test_create_contact``: Tests the creation of a new contact and checks \
                            if the contact's data is correctly stored.
-- ``test_update_contact_found``: Confirms that updating an existing contact's
+- ``test_update_contact_found``: Confirms that updating an existing contact's \
                                  information works as expected.
-- ``test_update_contact_not_found``: Tests the update operation when
+- ``test_update_contact_not_found``: Tests the update operation when \
                                      the contact does not exist.
-- ``test_remove_contact_found``: Tests the removal of an existing contact
+- ``test_remove_contact_found``: Tests the removal of an existing contact \
                                  from the database.
-- ``test_remove_contact_not_found``: Verifies that the removal operation
-                                     behaves correctly when the contact
+- ``test_remove_contact_not_found``: Verifies that the removal operation \
+                                     behaves correctly when the contact \
                                      does not exist.
-- ``test_get_upcoming_birthdays_within_week``: Checks if the system correctly
-                                               identifies contacts with
-                                               upcoming birthdays within
+- ``test_get_upcoming_birthdays_within_week``: Checks if the system correctly \
+                                               identifies contacts with \
+                                               upcoming birthdays within \
                                                the next week.
-- ``test_get_upcoming_birthdays_outside_week``: Ensures that contacts whose
-                                                birthdays are not within
-                                                the next week are not
+- ``test_get_upcoming_birthdays_outside_week``: Ensures that contacts whose \
+                                                birthdays are not within \
+                                                the next week are not \
                                                 incorrectly fetched.
 
 **Usage**:
