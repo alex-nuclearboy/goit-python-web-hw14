@@ -79,6 +79,11 @@ REST API repository Contacts
   :undoc-members:
   :show-inheritance:
 
+.. automodule:: tests.test_unit_repository_contacts
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
 
 REST API repository Users
 =========================
