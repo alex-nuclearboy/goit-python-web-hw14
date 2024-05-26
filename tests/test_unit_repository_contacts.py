@@ -53,7 +53,7 @@ operations and interactions.
     python -m tests.test_unit_repository_contacts
 """
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, ANY
 
 from datetime import date, timedelta
 
@@ -104,19 +104,21 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
     async def test_get_contact_found(self):
         """Ensures retrieving a specific contact by ID is successful."""
         print("=== Test: Get Specific Contact (Found) ===")
+        contact_id = 1
         contact = Contact()
         self.session.query().filter().first.return_value = contact
         result = await get_contact(
-            contact_id=1, user=self.user, db=self.session
+            contact_id=contact_id, user=self.user, db=self.session
         )
         self.assertEqual(result, contact)
 
     async def test_get_contact_not_found(self):
         """Checks the behavior when no contact is found with the given ID."""
         print("=== Test: Get Specific Contact (Not Found) ===")
+        contact_id = 1
         self.session.query().filter().first.return_value = None
         result = await get_contact(
-            contact_id=1, user=self.user, db=self.session
+            contact_id=contact_id, user=self.user, db=self.session
         )
         self.assertIsNone(result)
 
@@ -131,11 +133,20 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
             birthday="2000-01-01",
             additional_info="Test"
         )
-        contact = Contact()
-        self.session.query().filter().first.return_value = contact
+        # Mocking up methods of the user creation function
+        self.session.add = MagicMock()
+        self.session.commit = MagicMock()
+        self.session.refresh = MagicMock()
+
         result = await create_contact(
             body=body, user=self.user, db=self.session
         )
+
+        # Checking method calls
+        self.session.add.assert_called_with(ANY)
+        self.session.commit.assert_called_once()
+        self.session.refresh.assert_called_once_with(ANY)
+        # Checking result attributes
         self.assertEqual(result.first_name, body.first_name)
         self.assertEqual(result.last_name, body.last_name)
         self.assertEqual(result.email, body.email)
@@ -147,6 +158,7 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
     async def test_update_contact_found(self):
         """Confirms that updating a contact's information works as expected."""
         print("=== Test: Update Contact (Found) ===")
+        contact_id = 1
         body = ContactUpdate(
             first_name="John",
             last_name="Doe",
@@ -157,15 +169,19 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
         )
         contact = Contact()
         self.session.query().filter().first.return_value = contact
-        self.session.commit.return_value = None
+        self.session.commit = MagicMock()
+
         result = await update_contact(
-            contact_id=1, body=body, user=self.user, db=self.session
+            contact_id=contact_id, body=body, user=self.user, db=self.session
         )
+
         self.assertEqual(result, contact)
+        self.session.commit.assert_called_once()
 
     async def test_update_contact_not_found(self):
         """Tests update operation when the contact does not exist."""
         print("=== Test: Update Contact (Not Found) ===")
+        contact_id = 1
         body = ContactUpdate(
             first_name="John",
             last_name="Doe",
@@ -175,21 +191,31 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
             additional_info="Test update"
         )
         self.session.query().filter().first.return_value = None
-        self.session.commit.return_value = None
+        self.session.commit = MagicMock()
+
         result = await update_contact(
-            contact_id=1, body=body, user=self.user, db=self.session
+            contact_id=contact_id, body=body, user=self.user, db=self.session
         )
+
         self.assertIsNone(result)
+        self.session.commit.assert_not_called()
 
     async def test_remove_contact_found(self):
         """Tests the removal of a contact found in the database."""
         print("=== Test: Remove Contact (Found) ===")
-        contact = Contact()
+        contact_id = 1
+        contact = Contact(id=contact_id, user_id=self.user.id)
         self.session.query().filter().first.return_value = contact
+        self.session.delete = MagicMock(contact)
+        self.session.commit = MagicMock()
+
         result = await remove_contact(
-            contact_id=1, user=self.user, db=self.session
+            contact_id=contact_id, user=self.user, db=self.session
         )
+
         self.assertEqual(result, contact)
+        self.session.delete.assert_called_once_with(contact)
+        self.session.commit.assert_called_once()
 
     async def test_remove_note_not_found(self):
         """
@@ -197,11 +223,16 @@ class TestContacts(unittest.IsolatedAsyncioTestCase):
         a non-existent contact.
         """
         print("=== Test: Remove Contact (Not Found) ===")
+        contact_id = 1
         self.session.query().filter().first.return_value = None
+        self.session.delete = MagicMock()
+        self.session.commit = MagicMock()
         result = await remove_contact(
-            contact_id=1, user=self.user, db=self.session
+            contact_id=contact_id, user=self.user, db=self.session
         )
         self.assertIsNone(result)
+        self.session.delete.assert_not_called()
+        self.session.commit.assert_not_called()
 
     async def test_get_upcoming_birthdays_within_week(self):
         """
