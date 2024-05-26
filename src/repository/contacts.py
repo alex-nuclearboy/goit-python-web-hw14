@@ -122,9 +122,11 @@ async def create_contact(body: ContactModel,
         db.commit()
         db.refresh(contact)
         return contact
-    except Exception as e:
+    except Exception as err:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(
+            status_code=400, detail=f"Failed to create contact: {str(err)}"
+        )
 
 
 async def remove_contact(contact_id: int,
