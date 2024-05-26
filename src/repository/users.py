@@ -43,7 +43,11 @@ async def get_user_by_email(email: str, db: Session) -> User:
     :return: The user object if found, otherwise None.
     :rtype: User
     """
-    return db.query(User).filter(User.email == email).first()
+    try:
+        return db.query(User).filter(User.email == email).first()
+    except Exception as err:
+        print(f"Error retrieving user by email {email}: {err}")
+        return None
 
 
 async def create_user(body: UserModel, db: Session) -> User:
@@ -101,10 +105,18 @@ async def confirm_email(email: str, db: Session) -> None:
     :type db: Session
     :return: None
     :rtype: None
+    :raises ValueError: If the user with the given email is not found.
+    :raises Exception: If any other error occurs during the operation.
     """
-    user = await get_user_by_email(email, db)
-    user.confirmed = True
-    db.commit()
+    try:
+        user = await get_user_by_email(email, db)
+        if user is None:
+            raise ValueError(f"User with email {email} not found.")
+        user.confirmed = True
+        db.commit()
+    except Exception as err:
+        db.rollback()
+        raise err
 
 
 async def update_avatar(email, url: str, db: Session) -> User:
@@ -121,8 +133,16 @@ async def update_avatar(email, url: str, db: Session) -> User:
     :type db: Session
     :return: The updated user object after changing the avatar.
     :rtype: User
+    :raises ValueError: If the user with the given email is not found.
+    :raises Exception: If any other error occurs during the operation.
     """
-    user = await get_user_by_email(email, db)
-    user.avatar = url
-    db.commit()
-    return user
+    try:
+        user = await get_user_by_email(email, db)
+        if user is None:
+            raise ValueError(f"User with email {email} not found.")
+        user.avatar = url
+        db.commit()
+        return user
+    except Exception as err:
+        db.rollback()
+        raise err
