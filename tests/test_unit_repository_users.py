@@ -17,16 +17,23 @@ functions perform as expected under various conditions.
 
 **Test Methods**:
 
-- ``test_get_user_by_email``: Verifies that fetching a user by email \
-                              retrieves the correct user from the database.
+- ``test_get_user_by_email_found``: Verifies that fetching a user by email \
+                                    retrieves the correct user from the db.
+- ``test_get_user_by_email_not_found``: Checks the behavior when no user \
+                                        is found with the given email.
 - ``test_create_user``: Tests the creation of a new user, including the \
                         assignment of a Gravatar image as the user's avatar.
 - ``test_update_token``: Checks whether the refresh token of a user is \
                          updated correctly in the database.
 - ``test_confirm_email``: Ensures that a user's email confirmation status is \
                           updated correctly.
+- ``test_confirm_email_user_not_found``: Verifies the behavior when \
+                                         attempting to confirm the email \
+                                         of a non-existent user.
 - ``test_update_avatar``: Verifies that a user's avatar URL is updated \
                           correctly in the database.
+- ``test_update_avatar_user_not_found``: Checks the behavior when updating \
+                                         the avatar of a non-existent user.
 
 **Usage**:
 
@@ -38,7 +45,7 @@ functions perform as expected under various conditions.
 """
 
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from sqlalchemy.orm import Session
 
@@ -83,13 +90,7 @@ class TestUsers(unittest.IsolatedAsyncioTestCase):
         """Test retrieving a user by email when the user exists."""
         print("=== Test: Get User by Email (Found) ===")
         test_email = "user@example.com"
-        user = User(
-            id=1,
-            username="testuser",
-            email=test_email,
-            password="123456",
-            confirmed=True
-        )
+        user = self.user
         self.session.query().filter().first.return_value = user
         result = await get_user_by_email(
             email=test_email, db=self.session
@@ -105,65 +106,125 @@ class TestUsers(unittest.IsolatedAsyncioTestCase):
         """Test retrieving a user by email when the user does not exist."""
         print("=== Test: Get User by Email (Not Found) ===")
         test_email = "user@example.com"
-        user = User(
-            id=1,
-            username="testuser",
-            email=test_email,
-            password="123456",
-            confirmed=True
-        )
         self.session.query().filter().first.return_value = None
         result = await get_user_by_email(
-            email=user.email, db=self.session
+            email=test_email, db=self.session
         )
         self.assertIsNone(result)
 
     async def test_create_user(self):
         """Tests the creation of a new user."""
         print("=== Test: Create New User ===")
-        body = UserModel(
-            username='testuser',
-            email='user@example.com',
-            password='123456'
-        )
         avatar_url = "http://example.com/avatar.jpg"
-        user = User()
-        self.session.query().filter().first.return_value = user
-        result = await create_user(body=body, db=self.session)
-        self.assertEqual(result.username, body.username)
-        self.assertEqual(result.email, body.email)
-        self.assertEqual(result.password, body.password)
-        self.assertEqual(avatar_url, self.user.avatar)
+
+        with patch('src.repository.users.Gravatar') as mock_avatar:
+            mock_avatar.return_value.get_image.return_value = avatar_url
+            body = UserModel(
+                username='testuser',
+                email='user@example.com',
+                password='123456'
+            )
+            user = User(
+                username=body.username,
+                email=body.email,
+                password=body.password,
+                avatar=avatar_url
+            )
+            # Mocking up methods of the user creation function
+            self.session.add = MagicMock(user)
+            self.session.commit = MagicMock()
+            self.session.refresh = MagicMock(user)
+
+            result = await create_user(body=body, db=self.session)
+
+            # Checking method calls
+            self.session.add.assert_called_once_with(result)
+            self.session.commit.assert_called_once()
+            self.session.refresh.assert_called_once_with(result)
+            # Checking result attributes
+            self.assertEqual(result.username, body.username)
+            self.assertEqual(result.email, body.email)
+            self.assertEqual(result.password, body.password)
+            self.assertEqual(result.avatar, avatar_url)
+            # Checking Gravatar calls
+            mock_avatar.assert_called_once_with(body.email)
+            mock_avatar.return_value.get_image.assert_called_once()
 
     async def test_update_token(self):
         """Test updating the refresh token of a user."""
         print("=== Test: Update Token ===")
         test_token = "new_refresh_token"
+        self.session.commit = MagicMock()
         await update_token(
             user=self.user,
             token=test_token,
             db=self.session
         )
         self.assertEqual(self.user.refresh_token, test_token)
+        self.session.commit.assert_called_once()  # Ensure commit was called
 
     async def test_confirm_email(self):
         """Test confirming a user's email address."""
         print("=== Test: Confirm Email ===")
         test_email = "user@example.com"
-        self.session.query().filter().first.return_value = self.user
+        user = self.user
+        self.session.query().filter().first.return_value = user
+        self.session.commit = MagicMock()
         await confirm_email(email=test_email, db=self.session)
-        self.assertTrue(self.user.confirmed)
+        self.assertTrue(user.confirmed)
+        self.session.commit.assert_called_once()  # Ensure commit was called
+
+    async def test_confirm_email_user_not_found(self):
+        """
+        Test confirming a user's email address when the user does not exist.
+        """
+        print("=== Test: Confirm Email (User Not Found) ===")
+        test_email = "user@example.com"
+        self.session.query().filter().first.return_value = None
+        self.session.commit = MagicMock()
+        self.session.rollback = MagicMock()
+        with self.assertRaises(ValueError) as context:
+            await confirm_email(email=test_email, db=self.session)
+
+        self.assertEqual(
+            str(context.exception), f"User with email {test_email} not found."
+        )
+        self.session.commit.assert_not_called()  # Ensure commit was not called
+        self.session.rollback.assert_called_once()
 
     async def test_update_avatar(self):
         """Test updating a user's avatar."""
         print("=== Test: Update Avatar ===")
-        avatar_url = "http://example.com/new_avatar.jpg"
+        new_avatar_url = "http://example.com/new_avatar.jpg"
         test_email = "user@example.com"
-        self.session.query().filter().first.return_value = self.user
+        user = self.user
+        self.session.query().filter().first.return_value = user
+        self.session.commit = MagicMock()
         result = await update_avatar(
-            email=test_email, url=avatar_url, db=self.session
+            email=test_email, url=new_avatar_url, db=self.session
         )
-        self.assertEqual(result.avatar, avatar_url)
+        self.assertEqual(result.avatar, new_avatar_url)
+        self.session.commit.assert_called_once()  # Ensure commit was called
+
+    async def test_update_avatar_user_not_found(self):
+        """Test updating a user's avatar when the user does not exist."""
+        print("=== Test: Update Avatar (User Not Found) ===")
+        new_avatar_url = "http://example.com/new_avatar.jpg"
+        test_email = "user@example.com"
+        self.session.query().filter().first.return_value = None
+        self.session.commit = MagicMock()
+        self.session.rollback = MagicMock()
+
+        with self.assertRaises(ValueError) as context:
+            await update_avatar(
+                email=test_email, url=new_avatar_url, db=self.session
+            )
+
+        self.assertEqual(
+            str(context.exception), f"User with email {test_email} not found."
+        )
+        self.session.commit.assert_not_called()  # Ensure commit was not called
+        self.session.rollback.assert_called_once()
 
 
 if __name__ == '__main__':
