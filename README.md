@@ -43,6 +43,7 @@ This repository extends a previous project, which can be found [here](https://gi
 #### New in this extension:
 
 - **Enhanced Documentation:** Comprehensive documentation is added and can be generated using Sphinx.
+- **Tests:** 
 
 ## Technologies Used
 
