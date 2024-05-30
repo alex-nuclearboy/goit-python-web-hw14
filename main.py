@@ -69,7 +69,7 @@ import redis.asyncio as redis
 from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 
 from src.routes import contacts, auth, users
 from src.conf.config import settings
@@ -125,7 +125,7 @@ async def startup() -> None:
         raise ConnectionError("Failed to connect to Redis.") from e
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse, description="Main Page")
 def read_root() -> JSONResponse:
     """
     Root endpoint to provide a basic greeting and guide users
