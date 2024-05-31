@@ -54,12 +54,10 @@ security = HTTPBearer()
         "/signup", response_model=UserResponse,
         status_code=status.HTTP_201_CREATED,
         description=(
-            "Registers a new user account. After submitting required user "
-            "information, a verification email is sent to the user's email "
-            "address. This endpoint is rate-limited to 10 requests per minute "
-            "to prevent abuse."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "Registers a new user account. After submitting required "
+            "user information, a verification email is sent to the user's  "
+            "email address."
+        )
 )
 async def signup(
     body: UserModel,
@@ -107,10 +105,8 @@ async def signup(
         description=(
             "Authenticates a user by their email and password, returning "
             "JWT access and refresh tokens if successful. Ensures that only "
-            "confirmed emails can log in to enhance security. "
-            "Rate-limited to 10 requests per minute."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "confirmed emails can log in to enhance security."
+        )
 )
 async def login(
     body: OAuth2PasswordRequestForm = Depends(),
@@ -169,9 +165,7 @@ async def login(
         '/refresh_token', response_model=TokenModel,
         description=(
             "Allows a user to refresh their session by validating an existing "
-            "refresh token and issuing new access and refresh tokens. "
-            "This process is rate-limited to 10 requests per minute "
-            "to maintain security."
+            "refresh token and issuing new access and refresh tokens."
         ),
         dependencies=[Depends(RateLimiter(times=10, seconds=60))]
 )
@@ -222,10 +216,8 @@ async def refresh_token(
         description=(
             "Confirms a user's email address using a token sent to the user's "
             "email upon registration. Validates the token and marks the email "
-            "as confirmed. Rate-limited to 10 requests per minute to prevent "
-            "abuse of the endpoint."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "as confirmed."
+        )
 )
 async def confirm_email(token: str, db: Session = Depends(get_db)) -> dict:
     """
@@ -260,9 +252,8 @@ async def confirm_email(token: str, db: Session = Depends(get_db)) -> dict:
         description=(
             "Allows a user to request a new email verification if they "
             "haven't received the initial confirmation email or the link "
-            "has expired. Rate-limited to 10 requests per minute."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "has expired."
+        )
 )
 async def request_email(
     body: RequestEmail,
@@ -312,10 +303,8 @@ async def request_email(
         description=(
             "Initiates a password reset process for a user who has forgotten "
             "their password. A password reset link with a token is sent to "
-            "the user's  registered email. "
-            "Rate-limited to 10 requests per minute."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "the user's  registered email."
+        )
 )
 async def password_reset_request(
     body: RequestEmail,
@@ -363,10 +352,8 @@ async def password_reset_request(
         description=(
             "Allows a user to reset their password using a valid token "
             "received via email. This endpoint confirms the token's validity, "
-            "applies the new password, and updates the user's account. "
-            "Rate-limited to 10 requests per minute."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "applies the new password, and updates the user's account."
+        )
 )
 async def reset_password(
     token: str,
