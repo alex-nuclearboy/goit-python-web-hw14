@@ -120,9 +120,9 @@ async def startup() -> None:
             decode_responses=True
         )
         await FastAPILimiter.init(r)
-    except redis.RedisError as e:
-        logging.error(f"Failed to connect to Redis: {e}")
-        raise ConnectionError("Failed to connect to Redis.") from e
+    except redis.RedisError as err:
+        logging.error(f"Failed to connect to Redis: {err}")
+        raise ConnectionError("Failed to connect to Redis.") from err
 
 
 @app.get("/", response_class=HTMLResponse, description="Main Page")
@@ -136,7 +136,5 @@ def read_root() -> JSONResponse:
     :rtype: JSONResponse
     """
     return JSONResponse({
-        "message": "Contact Management API is up and running!",
-        "next_steps": "Please visit the /docs endpoint for detailed API "
-                      "documentation and interactive exploration of endpoints."
+        "message": "Contact Management API is up and running!"
     })
