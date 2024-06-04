@@ -144,11 +144,8 @@ async def read_contact(
         description=(
             "Creates a new contact entry in the database. "
             "Allows authenticated users to add new contact information. "
-            "Each request must include all required fields for a contact. "
-            "Rate-limited to 10 requests per minute to ensure service "
-            "quality and prevent abuse."
-        ),
-        dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            "Each request must include all required fields for a contact."
+        )
 )
 async def create_contact(
     body: ContactModel,
