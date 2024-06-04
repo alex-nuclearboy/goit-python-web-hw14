@@ -87,12 +87,15 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            expire = (
+                datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            )
         else:
             expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-        to_encode.update(
-            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "access_token"}
-        )
+        to_encode.update({
+            "iat": datetime.now(timezone.utc),
+            "exp": expire, "scope": "access_token"
+        })
         encoded_access_token = jwt.encode(to_encode, self.SECRET_KEY,
                                           algorithm=self.ALGORITHM)
         return encoded_access_token
@@ -112,12 +115,15 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            expire = (
+                datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            )
         else:
             expire = datetime.now(timezone.utc) + timedelta(days=7)
-        to_encode.update(
-            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "refresh_token"}
-        )
+        to_encode.update({
+            "iat": datetime.now(timezone.utc),
+            "exp": expire, "scope": "refresh_token"
+        })
         encoded_refresh_token = jwt.encode(
             to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
         )
@@ -200,8 +206,8 @@ class Auth:
         :rtype: str
         """
         to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(days=7)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire})
+        expire = datetime.now(timezone.utc) + timedelta(days=7)
+        to_encode.update({"iat": datetime.now(timezone.utc), "exp": expire})
         token = jwt.encode(
             to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
         )
