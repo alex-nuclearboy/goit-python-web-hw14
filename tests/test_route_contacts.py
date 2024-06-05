@@ -124,3 +124,39 @@ def test_get_contacts_unauthorised(client):
             headers={"Authorization": f"Bearer {token}"}
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@mark.usefixtures('mock_rate_limit')
+def test_update_contact(client, token):
+    with patch.object(auth_service, 'r') as r_mock:
+        r_mock.get.return_value = None
+        response = client.patch(
+            "/api/contacts/1",
+            json={"first_name": "Mike",
+                  "email": "mike.doe@example.com",
+                  "birthday": "1999-12-31",
+                  "additional_info": "Update test"},
+            headers={"Authorization": f"Bearer {token}"}, )
+        assert response.status_code == status.HTTP_200_OK, response.text
+        data = response.json()
+        assert data["first_name"] == "Mike"
+        assert data["email"] == "mike.doe@example.com"
+        assert data["birthday"] == "1999-12-31"
+        assert data["additional_info"] == "Update test"
+        assert "id" in data
+
+
+@mark.usefixtures('mock_rate_limit')
+def test_update_contact_not_found(client, token):
+    with patch.object(auth_service, 'r') as r_mock:
+        r_mock.get.return_value = None
+        response = client.patch(
+            "/api/contacts/10",
+            json={"first_name": "Mike",
+                  "email": "mike.doe@example.com",
+                  "birthday": "1999-12-31",
+                  "additional_info": "Update test"},
+            headers={"Authorization": f"Bearer {token}"}, )
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.text
+        data = response.json()
+        assert data["detail"] == "Contact not found"
