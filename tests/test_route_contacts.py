@@ -160,3 +160,35 @@ def test_update_contact_not_found(client, token):
         assert response.status_code == status.HTTP_404_NOT_FOUND, response.text
         data = response.json()
         assert data["detail"] == "Contact not found"
+
+
+@mark.usefixtures('mock_rate_limit')
+def test_delete_contact(client, token):
+    with patch.object(auth_service, 'r') as r_mock:
+        r_mock.get.return_value = None
+        response = client.delete(
+            "/api/contacts/1",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        assert response.status_code == status.HTTP_200_OK, response.text
+        data = response.json()
+        assert data["first_name"] == "Mike"
+        assert data["last_name"] == "Doe"
+        assert data["email"] == "mike.doe@example.com"
+        assert data["phone_number"] == "380504238517"
+        assert data["birthday"] == "1999-12-31"
+        assert data["additional_info"] == "Update test"
+        assert "id" in data
+
+
+@mark.usefixtures('mock_rate_limit')
+def test_repeat_delete_contact(client, token):
+    with patch.object(auth_service, 'r') as r_mock:
+        r_mock.get.return_value = None
+        response = client.delete(
+            "/api/contacts/1",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        assert response.status_code == status.HTTP_404_NOT_FOUND, response.text
+        data = response.json()
+        assert data["detail"] == "Contact not found"
