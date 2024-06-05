@@ -1,3 +1,63 @@
+"""
+Testing Module for Contact Management Operations
+------------------------------------------------
+
+This module provides a suite of synchronous test cases for testing the CRUD
+operations and additional functionalities of a Contact Management API
+using FastAPI and SQLAlchemy. These tests aim to verify the correct behavior
+of the API's interaction with a PostgreSQL database, focusing on creating,
+retrieving, updating, deleting contacts, and getting upcoming birthdays.
+
+The tests utilize the pytest framework and MagicMock to simulate database
+operations and interactions.
+
+**Fixtures**:
+
+- ``token``: Generates an authentication token for the test client by
+  registering and logging in a test user.
+
+**Test Functions**:
+
+- ``test_create_contact``: Verifies the creation of a new contact with a \
+                           birthday set to the current date plus 3 days but \
+                           with the year set to 2000.
+- ``test_get_contact``: Ensures that retrieving an existing contact by ID \
+                        works correctly and checks the returned data.
+- ``test_get_contact_unauthorised``: Checks the behavior when an unauthorised \
+                                     request is made to retrieve a contact.
+- ``test_get_contact_not_found``: Ensures that the system returns the correct \
+                                  status and message when attempting \
+                                  to retrieve a non-existent contact.
+- ``test_get_contacts``: Verifies the retrieval of multiple contacts with the \
+                         appropriate headers and checks the returned data.
+- ``test_get_contacts_unauthorised``: Ensures that unauthorised requests to \
+                                      retrieve multiple contacts are handled \
+                                      correctly.
+- ``test_get_upcoming_birthdays``: Verifies that the system correctly \
+                                   identifies contacts with birthdays \
+                                   occurring within the next week.
+- ``test_update_contact``: Confirms that updating an existing contact's \
+                           information works as expected.
+- ``test_update_contact_not_found``: Ensures that the system returns the \
+                                     correct status and message when \
+                                     attempting to update a non-existent \
+                                     contact.
+- ``test_delete_contact``: Verifies the deletion of an existing contact and \
+                           checks the returned data.
+- ``test_repeat_delete_contact``: Ensures that the system returns the correct \
+                                  status and message when attempting to \
+                                  delete a contact that has already been \
+                                  deleted.
+
+**Usage**:
+
+- The test suite can be executed as a standalone script by running the module:
+
+.. code-block:: python
+
+    pytest tests/test_route_contacts.py -v
+"""
+
 from unittest.mock import MagicMock, patch
 
 from pytest import mark, fixture
@@ -12,6 +72,10 @@ from datetime import datetime, timedelta
 
 @fixture()
 def token(client, user, session, monkeypatch):
+    """
+    This fixture registers, confirms, and logs in a test user \
+    to generate an authentication token.
+    """
     mock_send_email = MagicMock()
     monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
     client.post("/api/auth/signup", json=user)
@@ -30,6 +94,10 @@ def token(client, user, session, monkeypatch):
 
 @mark.usefixtures('mock_rate_limit')
 def test_create_contact(client, token):
+    """
+    Verifies the creation of a new contact with a birthday set to the current \
+    date plus 3 days but with the year set to 2000.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -59,6 +127,10 @@ def test_create_contact(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_contact(client, token):
+    """
+    Ensures that retrieving an existing contact by ID works correctly \
+    and checks the returned data.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -81,6 +153,10 @@ def test_get_contact(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_contact_unauthorised(client):
+    """
+    Checks the behavior when an unauthorised request \
+    is made to retrieve a contact.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         response = client.get(
@@ -92,6 +168,10 @@ def test_get_contact_unauthorised(client):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_contact_not_found(client, token):
+    """
+    Ensures that the system returns the correct status and message \
+    when attempting to retrieve a non-existent contact.
+  """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         response = client.get(
@@ -105,6 +185,10 @@ def test_get_contact_not_found(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_contacts(client, token):
+    """
+    Verifies the retrieval of multiple contacts with the appropriate headers \
+    and checks the returned data.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -128,6 +212,10 @@ def test_get_contacts(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_contacts_unauthorised(client):
+    """
+    Ensures that unauthorised requests to retrieve multiple contacts \
+    are handled correctly.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         response = client.get(
@@ -139,6 +227,10 @@ def test_get_contacts_unauthorised(client):
 
 @mark.usefixtures('mock_rate_limit')
 def test_get_upcoming_birthdays(client, token):
+    """
+    Verifies that the system correctly identifies contacts with birthdays \
+    occurring within the next week.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -162,6 +254,9 @@ def test_get_upcoming_birthdays(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_update_contact(client, token):
+    """
+    Confirms that updating an existing contact's information works as expected.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -185,6 +280,10 @@ def test_update_contact(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_update_contact_not_found(client, token):
+    """
+    Ensures that the system returns the correct status and message \
+    when attempting to update a non-existent contact.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -204,6 +303,9 @@ def test_update_contact_not_found(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_delete_contact(client, token):
+    """
+    Verifies the deletion of an existing contact and checks the returned data.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
@@ -226,6 +328,10 @@ def test_delete_contact(client, token):
 
 @mark.usefixtures('mock_rate_limit')
 def test_repeat_delete_contact(client, token):
+    """
+    Ensures that the system returns the correct status and message \
+    when attempting to delete a contact that has already been deleted.
+    """
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
         response = client.delete(
