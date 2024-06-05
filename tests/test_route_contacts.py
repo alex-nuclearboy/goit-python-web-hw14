@@ -138,6 +138,29 @@ def test_get_contacts_unauthorised(client):
 
 
 @mark.usefixtures('mock_rate_limit')
+def test_get_upcoming_birthdays(client, token):
+    with patch.object(auth_service, 'r') as r_mock:
+        r_mock.get.return_value = None
+        tmp_day = datetime.now() + timedelta(days=3)  # Current date + 3 days
+        birthday = tmp_day.replace(year=2000)  # Change the year to 2000
+        birthday_str = birthday.strftime("%Y-%m-%d")
+        response = client.get(
+            "/api/contacts/birthdays",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        assert response.status_code == status.HTTP_200_OK, response.text
+        data = response.json()
+        assert isinstance(data, list)
+        assert data[0]["first_name"] == "John"
+        assert data[0]["last_name"] == "Doe"
+        assert data[0]["email"] == "john.doe@example.com"
+        assert data[0]["phone_number"] == "380504238517"
+        assert data[0]["birthday"] == birthday_str
+        assert data[0]["additional_info"] == "Test"
+        assert "id" in data[0]
+
+
+@mark.usefixtures('mock_rate_limit')
 def test_update_contact(client, token):
     with patch.object(auth_service, 'r') as r_mock:
         r_mock.get.return_value = None
