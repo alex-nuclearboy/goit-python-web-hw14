@@ -105,6 +105,11 @@ REST API routes Contacts
   :undoc-members:
   :show-inheritance:
 
+.. automodule:: tests.test_route_contacts
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
 
 REST API routes Users
 =====================
@@ -117,6 +122,11 @@ REST API routes Users
 REST API routes Auth
 ====================
 .. automodule:: src.routes.auth
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+.. automodule:: tests.test_route_auth
   :members:
   :undoc-members:
   :show-inheritance:
