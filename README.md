@@ -1,6 +1,6 @@
 # Contact Management API
 
-This repository extends a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task), enhancing a REST API for contact management with comprehensive documentation generated using Sphinx. Built with FastAPI and SQLAlchemy, it supports advanced features including user authentication, contact searches, rate limiting, and integration with Cloudinary for avatar updates. This extension focuses on improved documentation and usability.
+This repository extends a previous project, which can be found [here](https://github.com/alex-nuclearboy/goit-python-web-hw13/tree/main/first_task), enhancing a REST API for contact management with comprehensive documentation generated using Sphinx. Built with FastAPI and SQLAlchemy, it supports advanced features including user authentication, contact searches, rate limiting, and integration with Cloudinary for avatar updates. This extension focuses on improved documentation and testing.
 
 ## Table of Contents
 
@@ -12,15 +12,15 @@ This repository extends a previous project, which can be found [here](https://gi
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
    - [Generating and Viewing Project Documentation](#generating-and-viewing-project-documentation)
+   - [Testing](#testing)
    - [Starting the FastAPI Application](#starting-the-fastapi-application)
 4. [Using the API](#using-the-api)
    - [Using the API with Swagger UI](#using-the-api-with-swagger-ui)
    - [Using the API with Postman](#using-the-api-with-postman)
 5. [Shutting Down and Exiting](#shutting-down-and-exiting)
    - [Stopping the Application](#stopping-the-application)
-   - [Shutting down the PostgreSQL Server](#shutting-down-the-postgresql-server)
+   - [Shutting Down the PostgreSQL Server](#shutting-down-the-postgresql-server)
    - [Exiting the Poetry Environment](#exiting-the-poetry-environment)
-
 
 ## Key Features
 
@@ -43,7 +43,7 @@ This repository extends a previous project, which can be found [here](https://gi
 #### New in this extension:
 
 - **Enhanced Documentation:** Comprehensive documentation is added and can be generated using Sphinx.
-- **Tests:** 
+- **Tests:** Tests to ensure the robustness of the API.
 
 ## Technologies Used
 
@@ -55,6 +55,7 @@ This repository extends a previous project, which can be found [here](https://gi
 - **Docker:** Used to containerize the application and PostgreSQL database.
 - **Poetry:** For managing Python package dependencies and virtual environments.
 - **Sphinx:** For generating project documentation.
+- **Unittest** and **Pytest:** For writing and running tests.
 
 ## Getting Started
 
@@ -135,6 +136,36 @@ cd docs
    ```powershell
    start _build\html\index.html
    ```
+### Testing
+
+#### Unit tests
+
+Unit tests are written using the `unittest` framework. To run the unit tests, use the following commands:
+
+- **Return to the root directory:**
+```bash
+cd ..
+```
+- **Run unit tests for contact repository:**
+```bash
+python -m tests.test_unit_repository_contacts
+```
+- **Run unit tests for user repository:**
+```bash
+python -m tests.test_unit_repository_users
+```
+
+#### `Pytest` framework
+
+Integration tests are written using the `pytest` framework. To run tests, use the following commands:
+- **Run tests for authentication routes:**
+```bash
+pytest tests/test_route_auth.py -v
+```
+- **Run tests for contact routes:**
+```bash
+pytest tests/test_route_contacts.py -v
+```
 
 ### Starting the FastAPI Application
 
